@@ -6,7 +6,7 @@ import datetime as dt
 import nltk
 import json
 import matplotlib.pyplot as plt
-
+import os
 import tweepy
 import yfinance as yf
 import unicodedata
@@ -16,7 +16,7 @@ import auth_key as key
 class Sentiment:
 
 	def __init__(self):
-		self.num_tweets = 50
+		self.num_tweets = 1000
 
 	def authenticate(self):
 		auth = tweepy.OAuthHandler(key.consumer_key, key.consumer_secret)
@@ -47,7 +47,7 @@ class Sentiment:
 		temp = pd.DataFrame(columns=["Date", "Tweets"])
 
 		for ind, tweet in self.raw_data.iterrows():
-			print(tweet)
+			# print(tweet)
 			body = tweet["Tweets"]
 			body = re.sub("[^ a-zA-Z0-9]", "", body)
 			temp.sort_index()
@@ -104,6 +104,26 @@ class Sentiment:
 
 		return(json.dumps(values)) 
 
+	def plot(self):
+		labels = ["Positive", "Neutral", "Negative"]
+		points = {}
+		colors = ["gold", "yellowgreen", "lightcoral"]
+
+		for ind, body in self.data.T.iteritems():
+			# print(ind)
+			points[str(self.data.Date.iloc[ind])] = [float(self.data.Positive.iloc[ind])]
+			points[str(self.data.Date.iloc[ind])].append(float(self.data.Neutral.iloc[2]))
+			points[str(self.data.Date.iloc[ind])].append(float(self.data.Negative.iloc[2]))
+
+			fig = plt.figure(ind)
+			p = [i * 100 for i in points[str(self.data.Date.iloc[ind])]]
+			plt.pie(p, colors=colors, labels=labels, autopct='%.2f', startangle=45)
+			plt.axis('equal')
+			plt.title(str(self.data.Date.iloc[ind]))
+			if not os.path.exists("graphs"):
+				os.mkdir("graphs")
+			fig.savefig("graphs/" + str(self.data.Date.iloc[ind]) + ".png")
+
 	def driver(self):
 		self.authenticate()
 		self.get_Tweets("#VmWare")
@@ -111,7 +131,7 @@ class Sentiment:
 		self.process_Tweets()
 		self.compute_Sentiment()
 		self.get_Sentiment()
-		# self.plot()
+		self.plot()
 
 if __name__ == "__main__":
 	sentiment = Sentiment()
