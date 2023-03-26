@@ -1,20 +1,21 @@
-import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react'; // Import useState
 import './Search.css';
 
-function Search() {
+
+function Search(props) {
   const [query, setQuery] = useState('');
+  const navigate = useNavigate(); // Add useNavigate hook
+
   function handleSubmit(event) {
     event.preventDefault();
-    // Logic to navigate to a different page ...
-    // ...
-    // ...
     console.log('Submitting query: ' + query);
+    navigate('/results'); // Navigate to OtherPage component
   }
   
   function handleQueryChange(event) {
     setQuery(event.target.value);
   }
-
   return (
     <div className="App">
       <div className="container-header">

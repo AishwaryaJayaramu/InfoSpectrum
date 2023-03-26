@@ -70,8 +70,6 @@ input {
 button {
   all: unset;
   cursor: pointer;
-  width: 44px;
-  height: 44px;
 }
 
 svg {
@@ -80,4 +78,17 @@ svg {
   width: 24px;
   height: 24px;
   padding: 10px;
+}
+
+.res_button {
+  background-color: #4654e1;
+  border: none;
+  color: white;
+  padding: 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  border-radius: 8px;
 }
