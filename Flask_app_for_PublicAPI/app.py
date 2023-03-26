@@ -46,6 +46,31 @@ def image_api(name):
         traceback.print_exc()
     return Response(response=jsonpickle.encode(image), status=200, mimetype="application/json")
 
+@app.route('/place/scores/<name>')
+def place_score_api(name):
+    try:
+        url = "{}scores/".format(str(uaDict[name.title()]))
+        result=requests.get(url)
+        response = result.json()
+        #pprint(response)
+        score={}
+        score['Cost of Living'] = 10.0 - round(response['categories'][1]['score_out_of_10'],2)
+        score['Commute'] = round(response['categories'][5]['score_out_of_10'],2)
+        score['Safety'] = round(response['categories'][7]['score_out_of_10'],2)
+        score['Environmental Quality'] = round(response['categories'][10]['score_out_of_10'],2)
+        score['Taxation'] =10.0- round(response['categories'][12]['score_out_of_10'],2)
+        print(score)
+    except Exception as e:
+        score = {'Cost of Living':0,
+        'Commute':0,
+        'Safety':0,
+        'Environmental Quality':0,
+        'Taxation':0}
+        print("The Place Score Api have exception")
+        traceback.print_exc()
+    return Response(response=jsonpickle.encode(score), status=200, mimetype="application/json")
+
+
     
 if __name__ == '__main__':
     app.debug = True
