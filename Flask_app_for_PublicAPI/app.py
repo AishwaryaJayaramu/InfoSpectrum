@@ -97,6 +97,53 @@ def description_api(name):
     return Response(response=jsonpickle.encode(result), status=200, mimetype="application/json")
 
 
+def getUAValues():
+    global uaDict
+    url = "https://api.teleport.org/api/urban_areas/"
+    response = requests.get(url).json()
+
+    response = response['_links']['ua:item']
+
+    for item in response:
+        uaDict[item['name']]=item['href']
+        
+@app.route('/place/housing/<city>')
+def get_rents(city):
+    global uaDict
+    try:
+        url = "{}details".format(uaDict[city.title()])
+        
+        response = requests.get(url).json()
+        response = response['categories']
+        temp={}
+        for item in response:
+            if item['id']!='HOUSING':
+                continue
+            else:
+                temp =item['data']
+                break
+        response = temp
+        rents = []
+        label = []
+        
+        for index in reversed(range(3)):
+            label.append(response[index]['label'])
+            rents.append(int(response[index]['currency_dollar_value']))
+        housing={}
+        housing['rents']=rents
+        housing['label']=label
+        
+
+
+    except Exception as e:
+
+        print("The Rent Api have exception ")
+        traceback.print_exc()
+        housing = {'rents':[],'label':[]}
+
+    return Response(response=jsonpickle.encode(housing), status=200, mimetype="application/json")
+
+
     
 if __name__ == '__main__':
     app.debug = True
