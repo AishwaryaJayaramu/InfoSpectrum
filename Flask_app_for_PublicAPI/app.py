@@ -71,6 +71,32 @@ def place_score_api(name):
     return Response(response=jsonpickle.encode(score), status=200, mimetype="application/json")
 
 
+@app.route('/description/<name>')
+def description_api(name):
+    try:
+        if(name.find('New York')!=-1):
+            name = "New York City"
+
+        wikiLink='https://en.wikipedia.org/wiki/'+name.replace(" ","_")
+        if(name.find('_')==-1):
+            url ="https://en.wikipedia.org/w/api.php?action=opensearch&search={}&limit=1&namespace=0&format=json".format(name)
+            response=requests.get(url).json()
+            wikiLink = response[3][0]
+            name = response[1][0]
+
+        url = "https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro=1&explaintext=1&titles={}".format(name)
+        response=requests.get(url).json()
+        Page_id = list(response['query']['pages'].keys())[0]
+        result = {}
+        result['description'] = response['query']['pages'][Page_id]['extract']
+        result['url'] = wikiLink
+    except Exception as e:
+        result = {"description":"","url":""}
+        print("The wikipedia Api have exception ")
+        traceback.print_exc()
+    return Response(response=jsonpickle.encode(result), status=200, mimetype="application/json")
+
+
     
 if __name__ == '__main__':
     app.debug = True
