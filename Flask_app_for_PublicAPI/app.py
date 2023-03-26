@@ -147,4 +147,5 @@ def get_rents(city):
     
 if __name__ == '__main__':
     app.debug = True
+    getUAValues()
     app.run(port=8000)
