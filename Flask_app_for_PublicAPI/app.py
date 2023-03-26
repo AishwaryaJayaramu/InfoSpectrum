@@ -7,6 +7,7 @@ from flask_cors import CORS
 from news_key import *
 import traceback
 
+uaDict ={}
 app=Flask(__name__)
 CORS(app)
 
@@ -27,6 +28,23 @@ def company_news(name):
         print("The News Api have exception ")
         traceback.print_exc()
     return Response(response=jsonpickle.encode(articles), status=200, mimetype="application/json")
+
+
+@app.route('/place/image/<name>')
+def image_api(name):
+    try:
+        global uaDict
+        url = "{}images/".format(str(uaDict[name.title()]))
+        print(url)
+        response = requests.get(url).json()
+        #pprint(response)
+        image = {}
+        image['url'] = str(response['photos'][0]['image']['web'])
+    except Exception as e:
+        image = {"url":""}
+        print("The Place Image Api have exception ")
+        traceback.print_exc()
+    return Response(response=jsonpickle.encode(image), status=200, mimetype="application/json")
 
     
 if __name__ == '__main__':
