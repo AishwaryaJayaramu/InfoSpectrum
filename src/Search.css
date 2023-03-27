@@ -1,94 +1,94 @@
-.App {
-  text-align: center;
+.container-main-search {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
 }
 
-header h1 {
-  font-size: 60px;
-  font-weight: 600;
-  background-image: linear-gradient(to bottom left, #553c9a, #ee4b2b);
-  color: transparent;
-  background-clip: text;
-  -webkit-background-clip: text;
+h1 {
+    font-size: 70px;
+    font-weight: 600;
+    background-image: linear-gradient(to left, #ac8a03, #ffd52d);
+    color: transparent;
+    background-clip: text;
+    -webkit-background-clip: text;
 }
 
-.container-header {
-  position: fixed;
-  margin-top: 0px;
-  width: 100%;
-  background-color: #d1f6ed;
-  max-height: 25vh;
+.title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
 }
 
-.container-main {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.form {
+    background-color: #4654e1;
+    width: 300px;
+    height: 44px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 
-.App-link {
-  color: #61dafb;
+.body-container {
+    margin: 0; 
+    padding: 0;
+    background-image: url("./navneet-singh--7UmXfl8loc-unsplash.jpg");
+    background-size: cover;
+    height: 100vh;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-direction: column;
+    align-content: center;
+}
+  
+.search-box {
+    position: relative;
+    background: black;
+    border: 4px solid #ffd52d;
+    border-radius: 50px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.search-btn {
+    color: white;
+    float: right;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 2s;
 }
 
-form {
-  background-color: #4654e1;
-  width: 300px;
-  height: 44px;
-  border-radius: 5px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+.fa-search {
+    background: black;
+    font-size: 24px;
 }
 
-input {
-  all: unset;
-  font: 16px system-ui;
-  color: #fff;
-  height: 100%;
-  width: 100%;
-  padding: 6px 10px;
+.search-input {
+    border: white;
+    border-color: white;
+    background: none;
+    outline: none;
+    float: left;
+    padding: 0;
+    color: white;
+    font-size: 20px;
+    transition: 0.4s;
+    line-height: 80px;
+    width: 0;
 }
 
-::placeholder {
-  color: #fff;
-  opacity: 0.7; 
-}
-
-button {
-  all: unset;
-  cursor: pointer;
-}
-
-svg {
-  color: #fff;
-  fill: currentColor;
-  width: 24px;
-  height: 24px;
-  padding: 10px;
-}
-
-.res_button {
-  background-color: #4654e1;
-  border: none;
-  color: white;
-  padding: 20px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
-  border-radius: 8px;
+.search-box:hover > .search-input {
+    border: white;
+    border-color: white;
+    width: 250px;
+    padding: 0 7px;
 }

@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import React, { useState } from 'react'; // Import useState
+import { FaSearch } from 'react-icons/fa';
 import './Search.css';
-
 
 function Search(props) {
   const [query, setQuery] = useState('');
@@ -10,26 +10,41 @@ function Search(props) {
   function handleSubmit(event) {
     event.preventDefault();
     console.log('Submitting query: ' + query);
-    navigate('/results'); // Navigate to OtherPage component
+    navigate('/results', { state: { query } });
+ // Navigate to OtherPage component
   }
-  
+
   function handleQueryChange(event) {
     setQuery(event.target.value);
   }
+
+  function handleKeyDown(event) {
+    if (event.keyCode === 13) {
+      handleSubmit(event);
+    }
+  }
+
   return (
-    <div className="App">
-      <div className="container-header">
-        <header>
-          <h1>InfoSpectrum</h1>
-        </header>
-      </div>
-      <div className="container-main">
-        <form id="form" role="search" onSubmit={handleSubmit}>
-        <input type="search" id="query" name="q" placeholder="Search..." aria-label="Search through site content" value={query} onChange={handleQueryChange} />
-          <button>
-            <svg viewBox="0 0 1024 1024"><path class="path1" d="M848.471 928l-263.059-263.059c-48.941 36.706-110.118 55.059-177.412 55.059-171.294 0-312-140.706-312-312s140.706-312 312-312c171.294 0 312 140.706 312 312 0 67.294-24.471 128.471-55.059 177.412l263.059 263.059-79.529 79.529zM189.623 408.078c0 121.364 97.091 218.455 218.455 218.455s218.455-97.091 218.455-218.455c0-121.364-103.159-218.455-218.455-218.455-121.364 0-218.455 97.091-218.455 218.455z"></path></svg>
-          </button>
-        </form>
+    <div className='body-container'>
+      <div className="container-main-search">
+          <div className="title">
+              <h1>InfoSpectrum</h1>
+          </div>
+          <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+          <div className="search-box">
+              <input
+                className="search-input"
+                type="text"
+                name=""
+                placeholder="Meta"
+                value={query}
+                onChange={handleQueryChange}
+                onKeyDown={handleKeyDown}
+              />
+              <button className="search-btn">
+                <FaSearch />
+              </button>     
+          </div>
       </div>
     </div>
   );
