@@ -1,17 +1,26 @@
-from flask import Flask, Response
+from flask import Flask, Response, abort, jsonify
 import requests
 import json
 import jsonpickle
 from pprint import pprint
 from flask_cors import CORS
-from news_key import *
+# from news_key import *
 import traceback
+from pymongo import MongoClient
+import requests
+from jsonmerge import merge
+from configparser import ConfigParser
 
 uaDict ={}
+config_file = "files/config.ini"
+configur = ConfigParser()
+configur.read(config_file)
 app=Flask(__name__)
 CORS(app)
 
-
+@app.errorhandler(404)
+def not_found(e):
+    return jsonify(error=str(e)), 404
 
 @app.route('/company/<name>')
 def company_news(name):
@@ -143,8 +152,48 @@ def get_rents(city):
 
     return Response(response=jsonpickle.encode(housing), status=200, mimetype="application/json")
 
+@app.route("/locations/<name>")
+def office_locations(name):
+    #Get all the config info from config.ini
+    host = configur['DATABASE']['HOST']
+    port = int(configur['DATABASE']['PORT'])
+    username = configur['DATABASE']['USERNAME']
+    password = configur['DATABASE']['PASSWORD']
+    database = configur['DATABASE']['DB']
+    table_name = configur['DATABASE']['TABLE']
+
+    #Get location details from database
+    client = MongoClient(host, port, username=username, password=password)
+    db = client[database]
+    collections = db[table_name]
+    # document = collections.find_one({'name': name})
+    document = collections.find_one({'name': name}, {'_id': False})
+    if not document:
+        abort(404, description="Requested item not found")
+    data = {"Name": document['name'],
+            "Headquaters": document['headquarters']['city'] + ", " + document['headquarters']['state'],
+            "Locations": []}
+    for location in document["locations"].values():
+        data["Locations"].append(location)
+    return Response(response=jsonpickle.encode(data), status=200, mimetype="application/json")
 
     
+@app.route('/location_scores/<name>')
+def location_scores(name):
+    loc_url = "http://127.0.0.1:8000/locations/{}".format(name)
+    result = requests.get(loc_url).json()
+    if 'error' in result:
+        abort(404, description="Requested item not found")
+    locations = result['Locations']
+    data = []
+    for loc in locations:
+        location = loc['city']
+        scores_url = "http://127.0.0.1:8000/place/scores/{}".format((location))
+        scores = requests.get(scores_url).json()
+        data.append(merge(loc, scores))
+    return Response(response=jsonpickle.encode(data), status=200, mimetype="application/json")
+
+
 if __name__ == '__main__':
     app.debug = True
     getUAValues()
