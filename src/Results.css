@@ -42,17 +42,59 @@ body {
 }
 
 .carousel-container {
-  display: flex;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
+  width: 100%;
+  overflow: hidden;
 }
 
-.carousel-item {
-  flex-shrink: 0;
+.carousel {
+  display: flex;
+  transition: transform 0.3s ease-in-out;
+}
+
+.slide {
   width: 100%;
-  scroll-snap-align: start;
-  margin-right: 20px; /* Adds spacing between items */
+  flex-shrink: 0;
+  margin-right: 20px;
+  text-align: center;
+  display: none;
+}
+
+.slide:last-of-type {
+  margin-right: 0;
+}
+
+.active {
+  opacity: 1;
+  display: initial;
+}
+
+.arrows {
+  position: relative;
+}
+
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
+  font-size: 30px;
+  font-weight: bold;
+  text-align: center;
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+}
+
+.prev {
+  left: 0;
+  border-radius: 4px 0 0 4px;
+}
+
+.next {
+  right: 0;
+  border-radius: 0 4px 4px 0;
 }
 
 .search-input {

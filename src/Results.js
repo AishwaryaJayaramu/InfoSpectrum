@@ -82,7 +82,15 @@ function Card(props) {
       flag=true
     }
   }, [props.card_type, props.query]);
+  const [activeIndex, setActiveIndex] = useState(0);
 
+  const handlePrevClick = () => {
+    setActiveIndex((activeIndex - 1 + data.length) % data.length);
+  };
+
+  const handleNextClick = () => {
+    setActiveIndex((activeIndex + 1) % data.length);
+  };
   if (flag) {
     return (
       <div className="card">
@@ -111,6 +119,7 @@ function Card(props) {
       );
     } else if (data) {
       if (Array.isArray(data)) { // Will implement more to have a carousel, spent too much time on this already before getting the other functional
+        
         const data_map=data.map((item, index) => (
           <div key={index}>
             <h2>{item.title}</h2>
@@ -120,12 +129,29 @@ function Card(props) {
           </div>
         ))
         return (
-          <div className="card other-cards" style={{width: '25%'}}>
-            <div className="carousel-container">
-              <div className="carousel-items">
-                {data_map[0]}
+          <div className="card" style={{height: "300px"}}>
+            <div className="carousel-container" style={{height: "280px"}}>
+              <div className="carousel">
+                {data.map((item, index) => (
+                  <div
+                    key={item.id}
+                    className={`slide ${index === activeIndex ? 'active' : ''}`}
+                  >
+                    <h2>{item.title}</h2>
+                    <p>{item.content.slice(0,-13)}</p>
+                    <p>Read more <a href={item.url}>here</a></p>
+                  </div>
+                ))}
               </div>
             </div>
+            <div className="arrows">
+                <span className="arrow prev" onClick={handlePrevClick} >
+                  &#10094;
+                </span>
+                <span className="arrow next" onClick={handleNextClick}>
+                  &#10095;
+                </span>
+              </div>
           </div>
         );
       } else {
@@ -236,7 +262,6 @@ function Card(props) {
         
         <h2 style={{ textAlign: 'center' }}>Stock Price</h2>
         <ResponsiveContainer width="95%" height="85%">
-          
          <LineChart width={1000} height={300} data={data} onMouseDown={(e) => setSelectedArea({ x1: e.activeLabel })} onMouseMove={(e) => selectedArea.x1 && setSelectedArea({ ...selectedArea, x2: e.activeLabel })} onMouseUp={handleAreaSelect}>
           <XAxis dataKey="date" stroke="#000" tickFormatter={formatXAxisTick}domain={[domain[0], domain[1]]} />
           <YAxis stroke="#000" />
