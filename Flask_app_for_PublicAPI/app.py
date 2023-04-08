@@ -2,6 +2,7 @@ from flask import Flask, Response, abort,request,render_template, jsonify
 import yfinance as yf
 import requests
 import json
+import re
 import jsonpickle
 from pprint import pprint
 from flask_cors import CORS
@@ -177,6 +178,32 @@ def office_locations(name):
     for location in document["locations"].values():
         data["Locations"].append(location)
     return Response(response=jsonpickle.encode(data), status=200, mimetype="application/json")
+
+
+@app.route("/layoff/<company>", methods=["GET"])
+def layoff(company):
+    #Get all the config info from config.ini
+    host = configur['DATABASE']['HOST']
+    port = int(configur['DATABASE']['PORT'])
+    username = configur['DATABASE']['USERNAME']
+    password = configur['DATABASE']['PASSWORD']
+    database = configur['DATABASE']['DB']
+    table_name = configur['DATABASE']['TABLE']
+
+    #Get layoff details from database
+    client = MongoClient(host, port, username=username, password=password)
+    db = client[database]
+    collection = db[table_name]
+    pattern = re.compile(f'.*{company}.*', re.IGNORECASE)
+    
+    result = []
+    for data in collection.find({'Company':{'$regex': pattern}}):
+        if 'Address' in data:
+            address=data['Address']
+        else:
+             address ="NA"      
+        result.append({'Location': str(data['County/Parish']),'Received Date': str(data['Received_Date']),'Effective Date': str(data['Effective_Date']),'No of Employees': str(data['No_Of_Employees']),'Address': address})
+    return jsonify({'data':result})
 
     
 @app.route('/location_scores/<name>')
