@@ -222,35 +222,60 @@ def location_scores(name):
     return Response(response=jsonpickle.encode(data), status=200, mimetype="application/json")
 
 # API Route for pulling the stock quote
-@app.route("/quote")
-def display_quote():
-	# get a stock ticker symbol from the query string
-	# default to AAPL
-	symbol = request.args.get('symbol', default="AAPL")
+@app.route("/quote/<name>")
+def display_quote(name):
+    #Get all the config info from config.ini
+    host = configur['DATABASE']['HOST']
+    port = int(configur['DATABASE']['PORT'])
+    username = configur['DATABASE']['USERNAME']
+    password = configur['DATABASE']['PASSWORD']
+    database = configur['DATABASE']['DB']
+    table_name = configur['DATABASE']['TABLE']
+
+    #Get ticker symbol from database
+    client = MongoClient(host, port, username=username, password=password)
+    db = client[database]
+    collections = db[table_name]
+    document = collections.find_one({'company_name': name})
+    symbol = document['ticker_symbol']
 
 	# pull the stock quote
-	quote = yf.Ticker(symbol)
+    quote = yf.Ticker(symbol)
 
 	#return the object via the HTTP Response
-	print(jsonify(quote.info))
-	return jsonify(quote.info)
+    print(jsonify(quote.info))
+    return jsonify(quote.info)
+
 
 # API route for pulling the stock history
-@app.route("/history")
-def display_history():
-	#get the query string parameters
-	symbol = request.args.get('symbol', default="AAPL")
-	period = request.args.get('period', default="1y")
-	interval = request.args.get('interval', default="1d")
+@app.route("/history/<name>")
+def display_history(name):
+	
+    #Get all the config info from config.ini
+    host = configur['DATABASE']['HOST']
+    port = int(configur['DATABASE']['PORT'])
+    username = configur['DATABASE']['USERNAME']
+    password = configur['DATABASE']['PASSWORD']
+    database = configur['DATABASE']['DB']
+    table_name = configur['DATABASE']['TABLE']
+
+    #get the query string parameters
+    client = MongoClient(host, port, username=username, password=password)
+    db = client[database]
+    collections = db[table_name]
+    document = collections.find_one({'company_name': name})
+    symbol = document['ticker_symbol']
+    period = request.args.get('period', default="1y")
+    interval = request.args.get('interval', default="1d")
 
 	#pull the quote
-	quote = yf.Ticker(symbol)	
+    quote = yf.Ticker(symbol)	
 	#use the quote to pull the historical data from Yahoo finance
-	hist = quote.history(period=period, interval=interval)
+    hist = quote.history(period=period, interval=interval)
 	#convert the historical data to JSON
-	data = hist.to_json()
+    data = hist.to_json()
 	#return the JSON in the HTTP response
-	return data
+    return data
 
 # This is the / route, or the main landing page route.
 @app.route("/")
