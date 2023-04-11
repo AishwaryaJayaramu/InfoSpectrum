@@ -275,15 +275,13 @@ def display_history(name):
 	#convert the historical data to JSON
     data = hist.to_json()
 	#return the JSON in the HTTP response
-    return data
+    return Response(response=jsonpickle.encode(data), status=200, mimetype="application/json")
 
 # This is the / route, or the main landing page route.
 @app.route("/")
 def home():
 	# we will use Flask's render_template method to render a website template.
     return render_template("homepage.html")
-
-
 
 if __name__ == '__main__':
     app.debug = True

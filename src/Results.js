@@ -66,22 +66,37 @@ function Card(props) {
   const [error, setError] = useState(null);
   var flag = false
   useEffect(() => {
-    if (props.card_type === '1') {
-      const endpoint = `http://localhost:8000/description/${props.query}`;
-      fetch(endpoint)
-        .then(response => response.json())
-        .then(data => setData(data))
-        .catch(error => setError(error));
-    } else if (props.card_type === '2') {
-      const endpoint = `http://localhost:8000/company/${props.query}`;
-      fetch(endpoint)
-        .then(response => response.json())
-        .then(data => setData(data))
-        .catch(error => setError(error));
-    } else {
-      flag=true
-    }
-  }, [props.card_type, props.query]);
+    let isSubscribed = true;
+
+    const fetchData = async () => {
+      try {
+        let endpoint;
+
+        if (card_type === '1') {
+          endpoint = `http://localhost:8000/description/${props.query}`;
+        } else if (card_type === '2') {
+          endpoint = `http://localhost:8000/company/${props.query}`;
+        } else if (card_type === '5') {
+          endpoint = `http://localhost:8000/history/${props.query}`;
+        }
+
+        const response = await fetch(endpoint);
+        const data = await response.json();
+
+        if (isSubscribed) {
+          setData(data);
+        }
+      } catch (error) {
+        setError(error);
+      }
+    };
+
+    fetchData();
+
+    return () => {
+      isSubscribed = false;
+    };
+  }, [card_type, props.query]);
   const [activeIndex, setActiveIndex] = useState(0);
 
   const handlePrevClick = () => {
@@ -91,13 +106,8 @@ function Card(props) {
   const handleNextClick = () => {
     setActiveIndex((activeIndex + 1) % data.length);
   };
-  if (flag) {
-    return (
-      <div className="card">
-        <h2>{props.query}</h2>
-      </div>
-    )
-  }
+  const abc = data
+
   if (card_type === '1') {
     const source =JSON.stringify(data)
     const obj = JSON.parse(source);
@@ -188,49 +198,12 @@ function Card(props) {
       </div>
     );
   } else if (card_type === '5') {
-    const data_pristine = [
-      { date: '2022-01-01', Price: 10 },
-      { date: '2022-01-02', Price: 15 },
-      { date: '2022-01-03', Price: 20 },
-      { date: '2022-01-04', Price: 15 },
-      { date: '2022-01-05', Price: 10 },
-      { date: '2022-01-06', Price: 10 },
-      { date: '2022-01-07', Price: 15 },
-      { date: '2022-01-08', Price: 20 },
-      { date: '2022-01-09', Price: 15 },
-      { date: '2022-01-10', Price: 10 },
-      { date: '2022-01-11', Price: 10 },
-      { date: '2022-01-12', Price: 10 },
-      { date: '2022-01-13', Price: 30 },
-      { date: '2022-01-14', Price: 5 },
-      { date: '2022-01-15', Price: 10 },
-      { date: '2022-01-16', Price: 10 },
-      { date: '2022-01-17', Price: 15 },
-      { date: '2022-01-18', Price: 20 },
-      { date: '2022-01-19', Price: 15 },
-      { date: '2022-01-20', Price: 10 },
-      { date: '2022-01-21', Price: 10 },
-      { date: '2022-01-22', Price: 15 },
-      { date: '2022-01-23', Price: 20 },
-      { date: '2022-01-24', Price: 15 },
-      { date: '2022-01-25', Price: 10 },
-      { date: '2022-01-26', Price: 10 },
-      { date: '2022-01-27', Price: 15 },
-      { date: '2022-01-28', Price: 20 },
-      { date: '2022-01-29', Price: 15 },
-      { date: '2022-01-30', Price: 10 },
-      { date: '2022-02-01', Price: 10 },
-      { date: '2022-02-02', Price: 10 },
-      { date: '2022-02-03', Price: 30 },
-      { date: '2022-02-04', Price: 5 },
-      { date: '2022-02-05', Price: 10 },
-      { date: '2022-02-06', Price: 10 },
-      { date: '2022-02-07', Price: 15 },
-      { date: '2022-02-08', Price: 20 },
-      { date: '2022-02-09', Price: 15 },
-      { date: '2022-02-10', Price: 10 },
-      // additional data points go here
-    ];
+    var data_pristine
+    if (! abc) {
+      data_pristine = [
+        // additional data points go here
+      ];
+    
     const [data, setData] = React.useState(data_pristine);
     const formatXAxisTick = (tickItem) => {
       return moment(tickItem).format('D MMM');
@@ -240,16 +213,10 @@ function Card(props) {
 
     const handleAreaSelect = (e) => {
       if (typeof(e.e) != 'undefined') {
-        console.log("domain before", domain)
-        const x1 = data[e.e.dataIndex1].date
-        const x2 = data[e.e.dataIndex2].date
         setDomain([e.e.dataIndex1, e.e.dataIndex2]);
         setData(data_pristine.slice(Math.min( e.e.dataIndex1, e.e.dataIndex2),Math.max( e.e.dataIndex1, e.e.dataIndex2)));
-        console.log("domain after", domain)
         setSelectedArea({});
       } else {
-        console.log(e)
-        console.log(typeof(e.e))
         setSelectedArea({});
       }
     };
@@ -261,34 +228,112 @@ function Card(props) {
       <div className="card other-cards" style={{width: '90%',height: '500px'}}>
         
         <h2 style={{ textAlign: 'center' }}>Stock Price</h2>
-        <ResponsiveContainer width="95%" height="85%">
-         <LineChart width={1000} height={300} data={data} onMouseDown={(e) => setSelectedArea({ x1: e.activeLabel })} onMouseMove={(e) => selectedArea.x1 && setSelectedArea({ ...selectedArea, x2: e.activeLabel })} onMouseUp={handleAreaSelect}>
-          <XAxis dataKey="date" stroke="#000" tickFormatter={formatXAxisTick}domain={[domain[0], domain[1]]} />
-          <YAxis stroke="#000" />
-          <Tooltip />
-          <Legend />
-          <Line type="monotone" dot={false} dataKey="Price" stroke="#5BDC95" strokeWidth={6}/>
-          {selectedArea.x1 && selectedArea.x2 && (
-          <ReferenceArea
-            x1={selectedArea.x1}
-            x2={selectedArea.x2}
-            fill="#8884d8"
-            fillOpacity={0.3}
-            onMouseUp={(e) => {
-              const dataIndex1 = data.findIndex((d) => d.date === selectedArea.x1);
-              const dataIndex2 = data.findIndex((d) => d.date === selectedArea.x2);
-              console.log(dataIndex1, dataIndex2)
-              handleAreaSelect({
-                    e: {dataIndex1, dataIndex2}
-              });
-            }}
-          />
-        )}
-
-        </LineChart>
-        </ResponsiveContainer>
+        <button onClick={resetAreaSelect}style={{backgroundColor: "#FE7748", borderRadius: '5%', height:'50px', width: '100d0px'}}>Load data</button>
       </div>
     );
+          }
+          data_pristine = [
+            { date: '2022-01-01', Price: 10 },
+            { date: '2022-01-02', Price: 15 },
+            { date: '2022-01-03', Price: 20 },
+            { date: '2022-01-04', Price: 15 },
+            { date: '2022-01-05', Price: 10 },
+            { date: '2022-01-06', Price: 10 },
+            { date: '2022-01-07', Price: 15 },
+            { date: '2022-01-08', Price: 20 },
+            { date: '2022-01-09', Price: 15 },
+            { date: '2022-01-10', Price: 10 },
+            { date: '2022-01-11', Price: 10 },
+            { date: '2022-01-12', Price: 10 },
+            { date: '2022-01-13', Price: 30 },
+            { date: '2022-01-14', Price: 5 },
+            { date: '2022-01-15', Price: 10 },
+            { date: '2022-01-16', Price: 10 },
+            { date: '2022-01-17', Price: 15 },
+            { date: '2022-01-18', Price: 20 },
+            { date: '2022-01-19', Price: 15 },
+            { date: '2022-01-20', Price: 10 },
+            { date: '2022-01-21', Price: 10 },
+            { date: '2022-01-22', Price: 15 },
+            { date: '2022-01-23', Price: 20 },
+            { date: '2022-01-24', Price: 15 },
+            { date: '2022-01-25', Price: 10 },
+            { date: '2022-01-26', Price: 10 },
+            { date: '2022-01-27', Price: 15 },
+            { date: '2022-01-28', Price: 20 },
+            { date: '2022-01-29', Price: 15 },
+            { date: '2022-01-30', Price: 10 },
+            { date: '2022-02-01', Price: 10 },
+            { date: '2022-02-02', Price: 10 },
+            { date: '2022-02-03', Price: 30 },
+            { date: '2022-02-04', Price: 5 },
+            { date: '2022-02-05', Price: 10 },
+            { date: '2022-02-06', Price: 10 },
+            { date: '2022-02-07', Price: 15 },
+            { date: '2022-02-08', Price: 20 },
+            { date: '2022-02-09', Price: 15 },
+            { date: '2022-02-10', Price: 10 },
+            // additional data points go here
+          ];
+        const source = JSON.parse(abc).Open
+        const dates = {};
+        for (const epoch in source) {
+          const date = new Date(parseInt(epoch));
+          const year = date.getFullYear();
+          const month = String(date.getMonth() + 1).padStart(2, '0');
+          const day = String(date.getDate()).padStart(2, '0');
+          const dateString = `${year}-${month}-${day}`;
+          dates[dateString] = source[epoch];
+        }
+        data_pristine = Object.entries(dates).map(([date, Price]) => ({ date, Price }));
+        const [data_1, setData_1] = React.useState(data_pristine);
+        const formatXAxisTick = (tickItem) => {
+          return moment(tickItem).format('D MMM');
+        }
+        const [selectedArea, setSelectedArea] = useState({});
+        const [domain, setDomain] = useState([0, data_1.length - 1]);
+    
+        const handleAreaSelect = (e) => {
+          if (typeof(e.e) != 'undefined') {
+            setDomain([e.e.dataIndex1, e.e.dataIndex2]);
+            setData_1(data_pristine.slice(Math.min( e.e.dataIndex1, e.e.dataIndex2),Math.max( e.e.dataIndex1, e.e.dataIndex2)));
+            setSelectedArea({});
+          } else {
+            setSelectedArea({});
+          }
+        };
+        const resetAreaSelect = () => {
+          setData_1(data_pristine);
+          setSelectedArea({});
+        }
+        return (
+          <div className="card other-cards" style={{width: '90%',height: '500px'}}>
+            
+            <h2 style={{ textAlign: 'center' }}>Stock Price</h2>
+            <button onClick={resetAreaSelect}style={{backgroundColor: "#FE7748", borderRadius: '5%', height:'50px', width: '100d0px'}}>Load New Data</button>
+            <ResponsiveContainer width="95%" height="85%">
+             <LineChart width={1000} height={300} data={data_1} onMouseDown={(e) => {setSelectedArea({ x1: e.activeLabel }); console.log('onMouseDown')}} onMouseMove={(e) => selectedArea.x1 && setSelectedArea({ ...selectedArea, x2: e.activeLabel })} onMouseUp={(e) => {
+                  const dataIndex1 = data_1.findIndex((d) => d.date === selectedArea.x1);
+                  const dataIndex2 = data_1.findIndex((d) => d.date === selectedArea.x2);
+                  handleAreaSelect({e: {dataIndex1, dataIndex2}})}}>
+              <XAxis dataKey="date" stroke="#000" tickFormatter={formatXAxisTick}domain={[domain[0], domain[1]]} />
+              <YAxis stroke="#000" />
+              <Tooltip />
+              <Legend />
+              <Line type="monotone" dot={false} dataKey="Price" stroke="#5BDC95" strokeWidth={6}/>
+              {selectedArea.x1 && selectedArea.x2 && (
+              <ReferenceArea
+                x1={selectedArea.x1}
+                x2={selectedArea.x2}
+                fill="#8884d8"
+                fillOpacity={0.3}
+              />
+            )}
+    
+            </LineChart>
+            </ResponsiveContainer>
+          </div>
+        );
   } else if (card_type === '6') {
     return (
       <div className="card other-cards" style={{width: '90%'}}>
