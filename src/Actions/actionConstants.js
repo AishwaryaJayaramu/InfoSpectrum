@@ -1,0 +1,16 @@
+export const SET_PLACE = "SET_THE_PLACE"
+
+export const SET_COMPANY = "SET_THE_COMPANY"
+
+export const SET_TITLE = "SET_THE_TITLE"
+
+export const SET_URL = "SET_THE_URL"
+
+export const SET_DESCRIPTION = "SET_THE_DESCRIPTION"
+
+export const CLEAR_FETCHED_TWEETS = "CLEAR_FETChED_TWEETS"
+
+export const TWEET_DATA_STREAM = "TWEETS_DATA_STREAM"
+
+export const ANALYSIS_DATA_STREAM = "ANALYSIS_DATA_STREAM"
+
