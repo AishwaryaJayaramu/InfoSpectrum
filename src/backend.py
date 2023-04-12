@@ -14,8 +14,6 @@ import time
 import unicodedata
 
 from twitter_keys import *
-from adzuna_keys import *
-from hobbies import *
 
 # init server
 twitter_api = None
