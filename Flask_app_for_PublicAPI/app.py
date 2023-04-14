@@ -208,7 +208,7 @@ def layoff(company):
     
 @app.route('/location_scores/<name>')
 def location_scores(name):
-    loc_url = "http://127.0.0.1:8000/locations/{}".format(name)
+    loc_url = "http://localhost:8000/locations/{}".format(name)
     result = requests.get(loc_url).json()
     if 'error' in result:
         abort(404, description="Requested item not found")
@@ -216,7 +216,7 @@ def location_scores(name):
     data = []
     for loc in locations:
         location = loc['city']
-        scores_url = "http://127.0.0.1:8000/place/scores/{}".format((location))
+        scores_url = "http://localhost:8000/place/scores/{}".format((location))
         scores = requests.get(scores_url).json()
         data.append(merge(loc, scores))
     return Response(response=jsonpickle.encode(data), status=200, mimetype="application/json")
@@ -286,4 +286,4 @@ def home():
 if __name__ == '__main__':
     app.debug = True
     getUAValues()
-    app.run(port=8000)
+    app.run(host="localhost",port=8000)

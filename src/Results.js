@@ -3,6 +3,7 @@ import { useNavigate,useLocation } from 'react-router-dom';
 import { FaCaretLeft } from 'react-icons/fa';
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, ReferenceArea } from 'recharts';
 import moment from 'moment';
+import cityDetails from './Company/citydetails';
 
 import './Results.css';
 
@@ -64,6 +65,7 @@ function Card(props) {
   const card_type = props.card_type;
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
+  const [arrayData, setArrayData] = useState([]);
   var flag = false
   useEffect(() => {
     let isSubscribed = true;
@@ -78,12 +80,17 @@ function Card(props) {
           endpoint = `http://localhost:8000/company/${props.query}`;
         } else if (card_type === '5') {
           endpoint = `http://localhost:8000/history/${props.query}`;
+        }else if (card_type === '6') {
+          endpoint = `http://localhost:8000/location_scores/${props.query}`;
         }
 
         const response = await fetch(endpoint);
         const data = await response.json();
 
         if (isSubscribed) {
+          if (card_type==6){
+            setArrayData(data);
+          }
           setData(data);
         }
       } catch (error) {
@@ -338,7 +345,7 @@ function Card(props) {
     return (
       <div className="card other-cards" style={{width: '90%'}}>
         <h2>City Details</h2> 
-        <p>Not implemented</p>
+        {cityDetails(arrayData)}
       </div>
     );
   } else if (card_type === '7') {
