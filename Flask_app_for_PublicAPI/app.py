@@ -14,7 +14,7 @@ from jsonmerge import merge
 from configparser import ConfigParser
 
 uaDict ={}
-config_file = "Flask_app_for_PublicAPI/config.ini"
+config_file = "config.ini"
 configur = ConfigParser()
 configur.read(config_file)
 app=Flask(__name__)
