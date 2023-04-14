@@ -129,4 +129,4 @@ dmypy.json
 .pyre/
 
 #config file
-files/config.ini
+Flask_app_for_PublicAPI/files/config.ini
