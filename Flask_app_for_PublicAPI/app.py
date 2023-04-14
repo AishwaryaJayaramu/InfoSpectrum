@@ -201,7 +201,7 @@ def layoff(company):
     
 @app.route('/location_scores/<name>')
 def location_scores(name):
-    loc_url = "http://127.0.0.1:8000/locations/{}".format(name)
+    loc_url = "http://localhost:8000/locations/{}".format(name)
     result = requests.get(loc_url).json()
     if 'error' in result:
         abort(404, description="Requested item not found")
@@ -209,7 +209,7 @@ def location_scores(name):
     data = []
     for loc in locations:
         location = loc['city']
-        scores_url = "http://127.0.0.1:8000/place/scores/{}".format((location))
+        scores_url = "http://localhost:8000/place/scores/{}".format((location))
         scores = requests.get(scores_url).json()
         data.append(merge(loc, scores))
     return Response(response=jsonpickle.encode(data), status=200, mimetype="application/json")
@@ -263,7 +263,7 @@ def display_history(name):
 	#convert the historical data to JSON
     data = hist.to_json()
 	#return the JSON in the HTTP response
-    return data
+    return Response(response=jsonpickle.encode(data), status=200, mimetype="application/json")
 
 # This is the / route, or the main landing page route.
 @app.route("/")
@@ -271,9 +271,7 @@ def home():
 	# we will use Flask's render_template method to render a website template.
     return render_template("homepage.html")
 
-
-
 if __name__ == '__main__':
     app.debug = True
     getUAValues()
-    app.run(port=8000)
+    app.run(host="localhost",port=8000)

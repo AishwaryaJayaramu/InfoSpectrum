@@ -1,0 +1,108 @@
+.company-container{
+    background:#f9f9f9;
+    display:flex;
+    
+    padding: 5px 5px;
+    flex-direction:column;
+}
+ 
+.top-row{
+    flex:2;
+    display:flex;
+    
+
+}
+
+
+h1
+{
+    color:#313335;
+    
+}
+
+.company-heading
+{
+    
+    flex:2;
+    padding-left: 20px;
+    padding-bottom: 30px;
+    margin-top: 2vh;
+}
+
+.ratings{
+    flex:1;
+    
+    height:11vh;
+    color:#313335;
+    align-self:flex-start;
+    margin-top: 1vh;
+    padding:10px;
+    margin-bottom: 20px;
+    font-weight: 600;
+    margin-right: 10px;
+}
+
+.company-elements
+{
+    display:grid;
+    grid-template-columns: 40% 25% 31%;
+    grid-template-rows: 40% 50% auto;
+    column-gap:20px;
+    row-gap:20px;
+    width: 92vw;
+    height: 70vh;
+    flex:5;
+    align-self: flex-end;
+}    
+
+h1{
+    color:#313335;
+}
+
+.company-details
+{
+    grid-column:1/2;
+    grid-row:1/2;
+    padding:5px 5px;
+    overflow:hidden;
+    font-weight: 600;
+    padding:5px 5px;
+    overflow: hidden;
+    text-align: justify;
+    white-space: pre-line;
+    text-overflow:ellipsis;
+    color:#313335;
+}
+
+
+.company-tweet-body
+{
+    grid-column:3/4;
+    grid-row:1/3;
+    background: #ffffff;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+    padding:5px 5px;
+    overflow:auto;
+    border-radius: 10px;
+}
+
+.tweets-body
+{
+    display:flex;
+    flex-direction: column;
+}
+.tweets-heading
+{
+ overflow:hidden;
+}
+
+.tweets
+{
+/* jdkfal */
+}
+
+.total-tweet
+{
+    font-weight: 700;
+    margin-top: 5px;
+}
