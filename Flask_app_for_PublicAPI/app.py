@@ -14,7 +14,7 @@ from jsonmerge import merge
 from configparser import ConfigParser
 
 uaDict ={}
-config_file = "files/config.ini"
+config_file = "config.ini"
 configur = ConfigParser()
 configur.read(config_file)
 app=Flask(__name__)
@@ -157,17 +157,13 @@ def get_rents(city):
 @app.route("/locations/<name>")
 def office_locations(name):
     #Get all the config info from config.ini
-    host = configur['DATABASE']['HOST']
-    port = int(configur['DATABASE']['PORT'])
-    username = configur['DATABASE']['USERNAME']
-    password = configur['DATABASE']['PASSWORD']
+    connection_string = configur['DATABASE']['CONNECTION_STRING']
     database = configur['DATABASE']['DB']
-    table_name = configur['DATABASE']['TABLE']
 
     #Get location details from database
-    client = MongoClient(host, port, username=username, password=password)
+    client = MongoClient(connection_string)
     db = client[database]
-    collections = db[table_name]
+    collections = db['company_locations']
     # document = collections.find_one({'name': name})
     document = collections.find_one({'name': name}, {'_id': False})
     if not document:
@@ -183,17 +179,14 @@ def office_locations(name):
 @app.route("/layoff/<company>", methods=["GET"])
 def layoff(company):
     #Get all the config info from config.ini
-    host = configur['DATABASE']['HOST']
-    port = int(configur['DATABASE']['PORT'])
-    username = configur['DATABASE']['USERNAME']
-    password = configur['DATABASE']['PASSWORD']
+    connection_string = configur['DATABASE']['CONNECTION_STRING']
     database = configur['DATABASE']['DB']
-    table_name = configur['DATABASE']['TABLE']
 
     #Get layoff details from database
-    client = MongoClient(host, port, username=username, password=password)
+    client = MongoClient(connection_string)
     db = client[database]
-    collection = db[table_name]
+    collection = db['layoff_info']
+
     pattern = re.compile(f'.*{company}.*', re.IGNORECASE)
     
     result = []
@@ -225,17 +218,14 @@ def location_scores(name):
 @app.route("/quote/<name>")
 def display_quote(name):
     #Get all the config info from config.ini
-    host = configur['DATABASE']['HOST']
-    port = int(configur['DATABASE']['PORT'])
-    username = configur['DATABASE']['USERNAME']
-    password = configur['DATABASE']['PASSWORD']
+    connection_string = configur['DATABASE']['CONNECTION_STRING']
     database = configur['DATABASE']['DB']
-    table_name = configur['DATABASE']['TABLE']
 
     #Get ticker symbol from database
-    client = MongoClient(host, port, username=username, password=password)
+    client = MongoClient(connection_string)
     db = client[database]
-    collections = db[table_name]
+    collections = db['ticker_info']
+
     document = collections.find_one({'company_name': name})
     symbol = document['ticker_symbol']
 
@@ -252,17 +242,15 @@ def display_quote(name):
 def display_history(name):
 	
     #Get all the config info from config.ini
-    host = configur['DATABASE']['HOST']
-    port = int(configur['DATABASE']['PORT'])
-    username = configur['DATABASE']['USERNAME']
-    password = configur['DATABASE']['PASSWORD']
+    connection_string = configur['DATABASE']['CONNECTION_STRING']
     database = configur['DATABASE']['DB']
-    table_name = configur['DATABASE']['TABLE']
 
     #get the query string parameters
-    client = MongoClient(host, port, username=username, password=password)
+    client = MongoClient(connection_string)
     db = client[database]
-    collections = db[table_name]
+    collections = db['ticker_info']
+
+
     document = collections.find_one({'company_name': name})
     symbol = document['ticker_symbol']
     period = request.args.get('period', default="1y")
