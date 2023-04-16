@@ -122,7 +122,7 @@ function Card(props) {
       <div className="card" style={{width: "90%"}}>
         <div className="description-card">
         <h2>{props.query}</h2>
-        {data &&         <p style={{overflowY: "auto"}}>{obj.description}</p>}
+        {data && <p style={{overflowY: "auto"}}>{obj.description}</p>}
         </div>
       </div>
     ) 
