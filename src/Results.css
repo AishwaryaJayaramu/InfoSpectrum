@@ -25,9 +25,15 @@ body {
   color: #FFFFFF;
   width: 300px;
   border: 1px solid #000000;
+  border-radius : 25px;
   margin-bottom: 10px;
   padding: 20px;
   margin: 20px;
+}
+
+.card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
 .description-card {
