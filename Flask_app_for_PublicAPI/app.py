@@ -6,9 +6,9 @@ import re
 import jsonpickle
 from pprint import pprint
 from flask_cors import CORS
-# from news_key import *
+from news_key import *
 import traceback
-from pymongo import MongoClient
+# from pymongo import MongoClient
 import requests
 from jsonmerge import merge
 from configparser import ConfigParser
@@ -274,4 +274,4 @@ def home():
 if __name__ == '__main__':
     app.debug = True
     getUAValues()
-    app.run(port=8000)
+    app.run(port=8000,host= "localhost")
