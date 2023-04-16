@@ -14,6 +14,7 @@ class SentimentalAnalysis extends React.Component
 
     componentDidMount()
     {
+        console.log('did mount')
         const url = "http://127.0.0.1:5001/sentiments"
         this.socket = socketIOClient(url);
 
@@ -53,7 +54,7 @@ class SentimentalAnalysis extends React.Component
 
     render(){
 
-
+        console.log(this.props)
         if(this.props.pie==0)
             return(<div><Loader active inline="centered" size='medium'>Fetching Information</Loader></div>)
 

@@ -3,6 +3,7 @@ import { useNavigate,useLocation } from 'react-router-dom';
 import { FaCaretLeft } from 'react-icons/fa';
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, ReferenceArea } from 'recharts';
 import moment from 'moment';
+import SentimentalAnalysis from './Company/analysis';
 
 import './Results.css';
 
@@ -80,8 +81,20 @@ function Card(props) {
           endpoint = `http://localhost:8000/history/${props.query}`;
         }
 
-        const response = await fetch(endpoint);
-        const data = await response.json();
+        if (card_type === '4') {
+          const response = await fetch('http://localhost:5001/sentiment', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ text: props.query }),
+          });
+
+          const data = await response.json();
+        } else {
+          const response = await fetch(endpoint);
+          const data = await response.json();
+        }
 
         if (isSubscribed) {
           setData(data);
@@ -191,10 +204,11 @@ function Card(props) {
       </div>
     );
   } else if (card_type === '4') {
+    console.log(data)
     return (
       <div className="card other-cards" style={{width: '25%'}}>
         <h2>Sentiment Analysis</h2> 
-        <p>Not implemented</p>
+        <SentimentalAnalysis company={props.query}/>
       </div>
     );
   } else if (card_type === '5') {
