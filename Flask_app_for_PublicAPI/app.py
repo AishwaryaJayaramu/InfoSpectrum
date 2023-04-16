@@ -165,6 +165,7 @@ def office_locations(name):
     db = client[database]
     collections = db['company_locations']
     # document = collections.find_one({'name': name})
+    name = name.capitalize()
     document = collections.find_one({'name': name}, {'_id': False})
     if not document:
         abort(404, description="Requested item not found")
@@ -172,7 +173,10 @@ def office_locations(name):
             "Headquaters": document['headquarters']['city'] + ", " + document['headquarters']['state'],
             "Locations": []}
     for location in document["locations"].values():
-        data["Locations"].append(location)
+        cityData = {}
+        cityData["City"] = location["city"]
+        cityData["State"] = location["state"]
+        data["Locations"].append(cityData)
     return Response(response=jsonpickle.encode(data), status=200, mimetype="application/json")
 
 
@@ -208,7 +212,7 @@ def location_scores(name):
     locations = result['Locations']
     data = []
     for loc in locations:
-        location = loc['city']
+        location = loc['City']
         scores_url = "http://localhost:8000/place/scores/{}".format((location))
         scores = requests.get(scores_url).json()
         data.append(merge(loc, scores))
@@ -274,4 +278,4 @@ def home():
 if __name__ == '__main__':
     app.debug = True
     getUAValues()
-    app.run(port=8000)
+    app.run(host="localhost",port=8000)
