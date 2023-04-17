@@ -226,7 +226,8 @@ def display_quote(name):
     db = client[database]
     collections = db['ticker_info']
 
-    document = collections.find_one({'company_name': name})
+    pattern = re.compile(f'.*{name}.*', re.IGNORECASE)
+    document = collections.find_one({'company_name': {'$regex': pattern}})
     symbol = document['ticker_symbol']
 
 	# pull the stock quote
@@ -250,8 +251,8 @@ def display_history(name):
     db = client[database]
     collections = db['ticker_info']
 
-
-    document = collections.find_one({'company_name': name})
+    pattern = re.compile(f'.*{name}.*', re.IGNORECASE)
+    document = collections.find_one({'company_name': {'$regex': pattern}})
     symbol = document['ticker_symbol']
     period = request.args.get('period', default="1y")
     interval = request.args.get('interval', default="1d")
