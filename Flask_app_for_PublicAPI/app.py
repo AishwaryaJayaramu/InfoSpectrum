@@ -12,6 +12,11 @@ import traceback
 import requests
 from jsonmerge import merge
 from configparser import ConfigParser
+from flask import Flask, jsonify
+import tweepy
+from twitter_keys import *
+from tweet import Sentiment
+
 
 uaDict ={}
 config_file = "config.ini"
@@ -28,7 +33,7 @@ def not_found(e):
 def company_news(name):
     try:
 
-        url = "http://newsapi.org/v2/everything?q={0}&page=1&pageSize=20&apiKey={1}&sortBy=popularity".format(name,api_key)
+        url = "http://newsapi.org/v2/everything?q={0}&page=1&pageSize=20&apiKey={1}&sortBy=popularity".format(name,"cf1e2b517cc346bcbc225d6069de5488")
         print(url)
         response = requests.get(url).json()
         #pprint(response)
@@ -82,28 +87,24 @@ def place_score_api(name):
     return Response(response=jsonpickle.encode(score), status=200, mimetype="application/json")
 
 
+
 @app.route('/description/<name>')
 def description_api(name):
     try:
-        if(name.find('New York')!=-1):
-            name = "New York City"
+        url = 'https://companies-datas.p.rapidapi.com/v2/company'
+        headers = {
+	    "X-RapidAPI-Key": "Key",
+	    "X-RapidAPI-Host": "companies-datas.p.rapidapi.com"
+    }
+        querystring = {"query":name+".com"}
 
-        wikiLink='https://en.wikipedia.org/wiki/'+name.replace(" ","_")
-        if(name.find('_')==-1):
-            url ="https://en.wikipedia.org/w/api.php?action=opensearch&search={}&limit=1&namespace=0&format=json".format(name)
-            response=requests.get(url).json()
-            wikiLink = response[3][0]
-            name = response[1][0]
-
-        url = "https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro=1&explaintext=1&titles={}".format(name)
-        response=requests.get(url).json()
-        Page_id = list(response['query']['pages'].keys())[0]
-        result = {}
-        result['description'] = response['query']['pages'][Page_id]['extract']
-        result['url'] = wikiLink
+        # response = requests.request("GET", url, headers=headers, params=querystring)    
+        # json_data = response.json()
+        # result = {"description":json_data['description']}
+        result = {"description": "asdffg"}
+        
     except Exception as e:
-        result = {"description":"","url":""}
-        print("The wikipedia Api have exception ")
+        print("The Rapid Api have exception ")
         traceback.print_exc()
     return Response(response=jsonpickle.encode(result), status=200, mimetype="application/json")
 
@@ -270,11 +271,35 @@ def display_history(name):
 	#return the JSON in the HTTP response
     return Response(response=jsonpickle.encode(data), status=200, mimetype="application/json")
 
-# This is the / route, or the main landing page route.
-@app.route("/")
-def home():
-	# we will use Flask's render_template method to render a website template.
-    return render_template("homepage.html")
+auth = tweepy.OAuthHandler(tw_consumer_key, tw_consumer_secret)
+auth.set_access_token(tw_access_token, tw_access_token_secret)
+api = tweepy.API(auth)
+
+
+@app.route('/tweets/<query>')
+def tweets(query):
+    tweets = []
+    for tweet in tweepy.Cursor(api.search, q=query, lang='en').items(10):
+        # Create a dictionary to store the tweet information of interest
+        tweet_info = {}
+        tweet_info['description'] = tweet.text  # tweet description
+        tweet_info['hashtags'] = [tag['text'] for tag in tweet.entities['hashtags']]  # hashtags
+        tweet_info['link'] = f"https://twitter.com/i/web/status/{tweet.id_str}"  # tweet link
+        tweets.append(tweet_info)
+    return jsonify(tweets)
+
+
+@app.route('/sentiment_analysis/<company>')
+def sentiment_analysis(company):
+    sentiment = Sentiment()
+    sentiment.authenticate()
+    hashtag = "#"+company
+    sentiment.get_Tweets(hashtag)
+    sentiment.read_Tweets("tweets.csv")
+    sentiment.process_Tweets()
+    sentiment.compute_Sentiment()
+    return sentiment.get_Sentiment()
+
 
 if __name__ == '__main__':
     app.debug = True
