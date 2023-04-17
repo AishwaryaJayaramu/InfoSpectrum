@@ -4,7 +4,6 @@ import { FaCaretLeft } from 'react-icons/fa';
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, ReferenceArea } from 'recharts';
 import moment from 'moment';
 import cityDetails from './Company/citydetails';
-import TweetList from "./Company/tweetlist"
 
 import './Results.css';
 
@@ -195,7 +194,7 @@ function Card(props) {
     return (
       <div className="card other-cards" style={{width: '25%'}}>
         <h2>Tweets</h2> 
-        <TweetList company={props.query}/>
+        <p>Not implemented</p>
       </div>
     );
   } else if (card_type === '4') {
@@ -211,7 +210,7 @@ function Card(props) {
       data_pristine = [
         // additional data points go here
       ];
-    /* eslint-disable react-hooks/rules-of-hooks */
+    
     const [data, setData] = React.useState(data_pristine);
     const formatXAxisTick = (tickItem) => {
       return moment(tickItem).format('D MMM');

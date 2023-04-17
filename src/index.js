@@ -8,13 +8,6 @@ import './index.css';
 import Search from './Search';
 import Results from './Results';
 import reportWebVitals from './reportWebVitals';
-import {createStore} from 'redux';
-import rootReducer from './store/combineReducer'
-import {Provider} from 'react-redux';
-
-
-
-const store = createStore(rootReducer,window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
 
 function App() {
   return (
@@ -31,9 +24,7 @@ function App() {
 ReactDOM.render(
   <React.StrictMode>
     <Router>
-    <Provider store ={store}>
       <App />
-    </Provider>
     </Router>
   </React.StrictMode>,
   document.getElementById('root')
