@@ -1,0 +1,19 @@
+
+table {
+    width: 100%;
+  }
+
+th {
+    background-color:#0000ff ;
+    color: #fff;
+    white-space: nowrap;
+  }
+
+td{
+    background-color: #1e90ff;
+}
+
+  th,td {
+  text-align: center;
+  padding: 0.5em 1em;
+}

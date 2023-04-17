@@ -41,7 +41,7 @@ function Search(props) {
                 onChange={handleQueryChange}
                 onKeyDown={handleKeyDown}
               />
-              <button className="search-btn">
+              <button className="search-btn" onClick={handleSubmit}>
                 <FaSearch />
               </button>     
           </div>
