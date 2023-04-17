@@ -22,6 +22,7 @@ class TweetList extends React.Component{
 
         this.socket.on('connect', () => {
             console.log("Socket Connected");
+            this.socket.emit("start",this.props.company)
         });
         
         this.socket.on("tweet", data=>{ 
@@ -31,7 +32,7 @@ class TweetList extends React.Component{
         
         
         const message =this.props.company
-        this.socket.emit("start",message)
+        
 
         this.socket.on("disconnect", () =>
             {

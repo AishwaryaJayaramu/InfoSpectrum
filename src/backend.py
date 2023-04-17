@@ -95,6 +95,7 @@ def company_tweet_connect():
 
     #create listener to listen for company tweets
     listener = TweetStreamListener()
+    print("reached listener")
     tweet_stream = tweepy.Stream(auth = twitter_api.auth, listener=listener, tweet_mode='extended')
 
 
@@ -113,8 +114,21 @@ def company_tweet_disconnect():
 def start_tweet_streaming(company):
     #start stream to listen to company tweets
     global tweet_stream
+    print("reached start")
+    auth = tweepy.OAuthHandler('3jmA1BqasLHfItBXj3KnAIGFB', 'imyEeVTctFZuK62QHmL1I0AUAMudg5HKJDfkx0oR7oFbFinbvA')
+    auth.set_access_token('265857263-pF1DRxgIcxUbxEEFtLwLODPzD3aMl6d4zOKlMnme', 'uUFoOOGeNJfOYD3atlcmPtaxxniXxQzAU4ESJLopA1lbC')
+    try:
+        api = tweepy.API(auth)
+        tweet_stream = tweepy.Stream(auth=api.auth, listener=TweetStreamListener())
+        tweet_stream.filter(track=["Python", "Java", "Ruby"])
+    except tweepy.TweepError as e:
+        print("Error: " + str(e))
+    # listener = TweetStreamListener()
+    # tweet_stream = tweepy.Stream(auth = twitter_api.auth, listener=listener, tweet_mode='extended')
+    # print(tweet_stream.filter(track=[company],languages=['en']))
 
-    tweet_stream.filter(track=[company],languages=['en'])
+
+    # return
 
 
 total_positive = 0
@@ -176,6 +190,7 @@ def sentiment_start_streaming(company):
             #search for tweets for this company
             results = []
             results = twitter_api.search(q=company, lang='en', count=100, tweet_mode="extended")
+            print(results)
 
             if len(results) == 0:
                 break
