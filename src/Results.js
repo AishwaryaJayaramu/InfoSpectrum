@@ -366,7 +366,7 @@ function Card(props) {
   } else if (card_type === '8') {
     return (
       <div className="card other-cards" style={{width: '60%'}}>
-        <h2>Average time in company</h2> 
+        <h2>Employee Reviews</h2> 
         <p>Not implemented</p>
       </div>
     );
