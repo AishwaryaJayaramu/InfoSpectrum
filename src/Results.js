@@ -3,6 +3,8 @@ import { useNavigate,useLocation } from 'react-router-dom';
 import { FaCaretLeft } from 'react-icons/fa';
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, ReferenceArea } from 'recharts';
 import moment from 'moment';
+import { PieChart } from 'react-minimal-pie-chart';
+
 import cityDetails from './Company/citydetails';
 
 import './Results.css';
@@ -209,7 +211,7 @@ function Card(props) {
                     {item.hashtags.map(hashtag => (
                       <p key={hashtag}>#{hashtag}</p>
                     ))}
-                    <a href={item.link} style={{color: 'white'}}>{item.description}</a>
+                    <a href={item.link} style={{color: 'white', }}>{item.description}</a>
                     <hr style={{ borderTop: '1px solid black' }} />
                   </div>
                 ))}
@@ -219,14 +221,31 @@ function Card(props) {
       );
     }
   } else if (card_type === '4') {
-    console.log(data)    
-    console.log(typeof(data))
-    return (
-      <div className="card other-cards" style={{width: '25%'}}>
-        <h2>Sentiment Analysis</h2> 
-        <p>Not implemented</p>
-      </div>
-    );
+    if (data) {
+      const [Positive, Neutral, Negative] = [data.Positive, data.Neutral, data.Negative]
+      return (
+        <div className="card other-cards" style={{width: '25%'}}>      
+          <h2>Analysis</h2>
+          <PieChart
+            animation
+            animationDuration={500}
+            animationEasing="ease-out"
+            data={[
+              { title: 'Positive', value: Positive, color: '#E38627' },
+              { title: 'Neutral', value: Neutral, color: '#C13C37' },
+              { title: 'Negative', value: Negative, color: '#6A2135' },
+            ]}
+            labelPosition={50}
+            labelStyle={{
+              fontSize: "10px",
+              fontColor: "#FFFFFF",
+              fontWeight: "400",
+            }}
+            label={(props) => { return props.dataEntry.title;}}
+          />
+        </div>
+      );
+    }
   } else if (card_type === '5') {
     var data_pristine
     if (! abc) {
@@ -264,45 +283,7 @@ function Card(props) {
           }
           data_pristine = [
             { date: '2022-01-01', Price: 10 },
-            { date: '2022-01-02', Price: 15 },
-            { date: '2022-01-03', Price: 20 },
-            { date: '2022-01-04', Price: 15 },
-            { date: '2022-01-05', Price: 10 },
-            { date: '2022-01-06', Price: 10 },
-            { date: '2022-01-07', Price: 15 },
-            { date: '2022-01-08', Price: 20 },
-            { date: '2022-01-09', Price: 15 },
-            { date: '2022-01-10', Price: 10 },
-            { date: '2022-01-11', Price: 10 },
-            { date: '2022-01-12', Price: 10 },
-            { date: '2022-01-13', Price: 30 },
-            { date: '2022-01-14', Price: 5 },
-            { date: '2022-01-15', Price: 10 },
-            { date: '2022-01-16', Price: 10 },
-            { date: '2022-01-17', Price: 15 },
-            { date: '2022-01-18', Price: 20 },
-            { date: '2022-01-19', Price: 15 },
-            { date: '2022-01-20', Price: 10 },
-            { date: '2022-01-21', Price: 10 },
-            { date: '2022-01-22', Price: 15 },
-            { date: '2022-01-23', Price: 20 },
-            { date: '2022-01-24', Price: 15 },
-            { date: '2022-01-25', Price: 10 },
-            { date: '2022-01-26', Price: 10 },
-            { date: '2022-01-27', Price: 15 },
-            { date: '2022-01-28', Price: 20 },
-            { date: '2022-01-29', Price: 15 },
-            { date: '2022-01-30', Price: 10 },
-            { date: '2022-02-01', Price: 10 },
-            { date: '2022-02-02', Price: 10 },
-            { date: '2022-02-03', Price: 30 },
-            { date: '2022-02-04', Price: 5 },
-            { date: '2022-02-05', Price: 10 },
-            { date: '2022-02-06', Price: 10 },
-            { date: '2022-02-07', Price: 15 },
-            { date: '2022-02-08', Price: 20 },
-            { date: '2022-02-09', Price: 15 },
-            { date: '2022-02-10', Price: 10 },
+            { date: '2022-01-02', Price: 15 }
             // additional data points go here
           ];
         const source = JSON.parse(abc).Open
@@ -336,6 +317,7 @@ function Card(props) {
           setData_1(data_pristine);
           setSelectedArea({});
         }
+        console.log(data)
         return (
           <div className="card other-cards" style={{width: '90%',height: '500px'}}>
             
