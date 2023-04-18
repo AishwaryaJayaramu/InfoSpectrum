@@ -78,9 +78,13 @@ function Card(props) {
           endpoint = `http://localhost:8000/description/${props.query}`;
         } else if (card_type === '2') {
           endpoint = `http://localhost:8000/company/${props.query}`;
+        } else if (card_type === '3') {
+          endpoint = `http://localhost:8000/tweets/${props.query}`;
+        } else if (card_type === '4') {
+          endpoint = `http://localhost:8000/sentiment_analysis/${props.query}`;
         } else if (card_type === '5') {
           endpoint = `http://localhost:8000/history/${props.query}`;
-        }else if (card_type === '6') {
+        } else if (card_type === '6') {
           endpoint = `http://localhost:8000/location_scores/${props.query}`;
         }
 
@@ -191,13 +195,32 @@ function Card(props) {
       );
     }
   } else if (card_type === '3') {
-    return (
-      <div className="card other-cards" style={{width: '25%'}}>
-        <h2>Tweets</h2> 
-        <p>Not implemented</p>
-      </div>
-    );
+    if (data) {
+      console.log(data[0])
+      console.log(typeof(data))
+      return (
+        <div className="card other-cards" style={{width: '25%'}}>
+          <h2>Tweets</h2> 
+          <hr style={{ borderTop: '3px black' }} />
+          <div style={{ height: '300px' }}>
+              <div className="scroll">
+                {data.map((item, index) => (
+                  <div>
+                    {item.hashtags.map(hashtag => (
+                      <p key={hashtag}>#{hashtag}</p>
+                    ))}
+                    <a href={item.link} style={{color: 'white'}}>{item.description}</a>
+                    <hr style={{ borderTop: '1px solid black' }} />
+                  </div>
+                ))}
+              </div>
+          </div>
+        </div>
+      );
+    }
   } else if (card_type === '4') {
+    console.log(data)    
+    console.log(typeof(data))
     return (
       <div className="card other-cards" style={{width: '25%'}}>
         <h2>Sentiment Analysis</h2> 
@@ -319,7 +342,7 @@ function Card(props) {
             <h2 style={{ textAlign: 'center' }}>Stock Price</h2>
             <button onClick={resetAreaSelect}style={{backgroundColor: "#FE7748", borderRadius: '5%', height:'50px', width: '100d0px'}}>Load New Data</button>
             <ResponsiveContainer width="95%" height="85%">
-             <LineChart width={1000} height={300} data={data_1} onMouseDown={(e) => {setSelectedArea({ x1: e.activeLabel }); console.log('onMouseDown')}} onMouseMove={(e) => selectedArea.x1 && setSelectedArea({ ...selectedArea, x2: e.activeLabel })} onMouseUp={(e) => {
+             <LineChart width={1000} height={300} data={data_1} onMouseDown={(e) => {if (e) setSelectedArea({ x1: e.activeLabel }); console.log('onMouseDown')}} onMouseMove={(e) => {if (e) selectedArea.x1 && setSelectedArea({ ...selectedArea, x2: e.activeLabel })}} onMouseUp={(e) => {
                   const dataIndex1 = data_1.findIndex((d) => d.date === selectedArea.x1);
                   const dataIndex2 = data_1.findIndex((d) => d.date === selectedArea.x2);
                   handleAreaSelect({e: {dataIndex1, dataIndex2}})}}>
