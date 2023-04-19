@@ -5,6 +5,7 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, Re
 import moment from 'moment';
 import { PieChart } from 'react-minimal-pie-chart';
 
+import layoff from './Company/layoffs.js';
 import cityDetails from './Company/citydetails';
 
 import './Results.css';
@@ -88,15 +89,17 @@ function Card(props) {
           endpoint = `http://localhost:8000/history/${props.query}`;
         } else if (card_type === '6') {
           endpoint = `http://localhost:8000/location_scores/${props.query}`;
+        } else if (card_type === '7') {
+          endpoint = `http://localhost:8000/layoff/${props.query}`;
         }
 
         const response = await fetch(endpoint);
         const data = await response.json();
 
         if (isSubscribed) {
-          if (card_type==6){
+          if (card_type==6 || card_type==7){
             setArrayData(data);
-          }
+          } 
           setData(data);
         }
       } catch (error) {
@@ -363,14 +366,14 @@ function Card(props) {
     );
   } else if (card_type === '7') {
     return (
-      <div className="card other-cards" style={{width: '25%'}}>
+      <div className="card other-cards" style={{width: '60%'}}>
         <h2>Layoffs</h2> 
-        <p>Not implemented</p>
+        {layoff(arrayData)}
       </div>
     );
   } else if (card_type === '8') {
     return (
-      <div className="card other-cards" style={{width: '60%'}}>
+      <div className="card other-cards" style={{width: '25%'}}>
         <h2>Employee Reviews</h2> 
         <p>Not implemented</p>
       </div>
