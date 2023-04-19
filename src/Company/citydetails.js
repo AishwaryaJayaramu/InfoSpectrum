@@ -2,6 +2,11 @@ import React from 'react';
 import './citydetails.css'
 
 function cityDetails(tbodyData) {
+   if (! tbodyData || tbodyData.length == 0) {
+      return (<div>No cities found</div>);
+   } else if (tbodyData.error) {
+      return (<div>{tbodyData.error}</div>);
+   }
    const theadData = Object.keys(tbodyData[0]);
    return (
    <table>

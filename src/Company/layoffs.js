@@ -2,10 +2,7 @@ import React from 'react';
 import './citydetails.css'
 
 function layoffs(tbodyData) {
-    console.log('layoffs')
-    console.log(tbodyData)
-    console.log(tbodyData.data)
-    if (! tbodyData || tbodyData.length == 0) {
+    if (! tbodyData.data || tbodyData.data.length === 0) {
         return (<div>No Layoffs</div>);
     }
    const theadData = Object.keys(tbodyData.data[0]);

@@ -1,4 +1,4 @@
-import React, {useState, useEffect } from 'react';
+import React, {useState, useEffect, useRef } from 'react';
 import { useNavigate,useLocation } from 'react-router-dom';
 import { FaCaretLeft } from 'react-icons/fa';
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, ReferenceArea } from 'recharts';
@@ -9,6 +9,8 @@ import layoff from './Company/layoffs.js';
 import cityDetails from './Company/citydetails';
 
 import './Results.css';
+
+
 
 function Results(props) {
  // const query = location.state.query;
@@ -32,7 +34,7 @@ function Results(props) {
   //      .then(response => response.json())
   //      .then(data => setData(data))
   //      .catch(error => setError(error));
-  
+  const stocksRef = React.useRef(null);
   return (
       <div>
         {/* Search bar at the top */}
@@ -55,7 +57,7 @@ function Results(props) {
           <Card query={query} card_type="2"/>
           <Card query={query} card_type="3"/>
           <Card query={query} card_type="4"/>
-          <Card query={query} card_type="5"/>
+          <Stocks query={query} card_type="5"/>
           <Card query={query} card_type="6"/>
           <Card query={query} card_type="7"/>
           <Card query={query} card_type="8"/>
@@ -63,6 +65,93 @@ function Results(props) {
       </div>
   );
 }
+
+function Stocks(props) {
+  console.log(props)
+  const [data, setData] = useState(null);
+  const stocksRef = React.useRef(null);
+  useEffect(() => {
+      const endpoint = `http://localhost:8000/history/${props.query}`;
+      const fetchData = async () => {
+          const response = await fetch(endpoint);
+          const datum = await response.json();
+          setData(datum);
+      } 
+  
+      fetchData();
+  }, [props.query]);
+
+  const source = data ? JSON.parse(data).Open : null;
+  const dates = {};
+  for (const epoch in source) {
+      const date = new Date(parseInt(epoch));
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const dateString = `${year}-${month}-${day}`;
+      dates[dateString] = source[epoch];
+  }
+  const data_pristine = Object.entries(dates).map(([date, Price]) => ({ date, Price }));
+  const [data_1, setData_1] = React.useState(data_pristine);
+  const formatXAxisTick = (tickItem) => {
+      return moment(tickItem).format('D MMM');
+  }
+  const [selectedArea, setSelectedArea] = useState({});
+  const [domain, setDomain] = useState([0, data_1.length - 1]);
+  
+  const handleAreaSelect = (e) => {
+      if (typeof(e.e) !== 'undefined') {
+          setDomain([e.e.dataIndex1, e.e.dataIndex2]);
+          setData_1(data_pristine.slice(Math.min( e.e.dataIndex1, e.e.dataIndex2),Math.max( e.e.dataIndex1, e.e.dataIndex2)));
+          setSelectedArea({});
+      } else {
+          setSelectedArea({});
+      }
+  };
+  const resetAreaSelect = () => {
+      setData_1(data_pristine);
+      setSelectedArea({});
+  }
+  console.log(data)
+  console.log(data_1)
+  return (
+    <div className="card other-cards" style={{width: '90%',height: '500px'}} key={data}>
+      <h2 style={{ textAlign: 'center' }}>Stock Price</h2>
+      {data ? (
+      <button onClick={resetAreaSelect}style={{backgroundColor: "#FE7748", borderRadius: '5%', height:'50px', width: '100d0px'}}>Load New Data</button>
+      ) : (
+        // Render a loading indicator if data is null
+        <div>No data yet...</div>
+      )}
+      {data ? (
+        <ResponsiveContainer width="95%" height="85%" key={typeof(data)}>
+          <LineChart width={1000} height={300} data={data_1} onMouseDown={(e) => {if (e) setSelectedArea({ x1: e.activeLabel }); console.log('onMouseDown')}} onMouseMove={(e) => {if (e) selectedArea.x1 && setSelectedArea({ ...selectedArea, x2: e.activeLabel })}} onMouseUp={(e) => {
+            const dataIndex1 = data_1.findIndex((d) => d.date === selectedArea.x1);
+            const dataIndex2 = data_1.findIndex((d) => d.date === selectedArea.x2);
+            handleAreaSelect({e: {dataIndex1, dataIndex2}})}}>
+            <XAxis dataKey="date" stroke="#000" tickFormatter={formatXAxisTick} domain={[domain[0], domain[1]]} />
+            <YAxis stroke="#000" />
+            <Tooltip />
+            <Legend />
+            <Line type="monotone" dot={false} dataKey="Price" stroke="#5BDC95" strokeWidth={6}/>
+            {selectedArea.x1 && selectedArea.x2 && (
+              <ReferenceArea
+                x1={selectedArea.x1}
+                x2={selectedArea.x2}
+                fill="#8884d8"
+                fillOpacity={0.3}
+              />
+            )}
+          </LineChart>
+        </ResponsiveContainer>
+      ) : (
+        // Render a loading indicator if data is null
+        <div>Loading...</div>
+      )}
+    </div>
+  );
+}
+
 
 function Card(props) {
   const card_type = props.card_type;
@@ -145,7 +234,6 @@ function Card(props) {
       );
     } else if (data) {
       if (Array.isArray(data)) { // Will implement more to have a carousel, spent too much time on this already before getting the other functional
-        
         const data_map=data.map((item, index) => (
           <div key={index}>
             <h2>{item.title}</h2>
@@ -224,7 +312,8 @@ function Card(props) {
       );
     }
   } else if (card_type === '4') {
-    if (data) {
+    console.log(data)
+    if (data && (data.Positive + data.Neutral + data.Negative) > 0) {
       const [Positive, Neutral, Negative] = [data.Positive, data.Neutral, data.Negative]
       return (
         <div className="card other-cards" style={{width: '25%'}}>      
@@ -250,105 +339,11 @@ function Card(props) {
       );
     }
   } else if (card_type === '5') {
-    var data_pristine
-    if (! abc) {
-      data_pristine = [
-        // additional data points go here
-      ];
-    
-    const [data, setData] = React.useState(data_pristine);
-    const formatXAxisTick = (tickItem) => {
-      return moment(tickItem).format('D MMM');
-    }
-    const [selectedArea, setSelectedArea] = useState({});
-    const [domain, setDomain] = useState([0, data.length - 1]);
-
-    const handleAreaSelect = (e) => {
-      if (typeof(e.e) != 'undefined') {
-        setDomain([e.e.dataIndex1, e.e.dataIndex2]);
-        setData(data_pristine.slice(Math.min( e.e.dataIndex1, e.e.dataIndex2),Math.max( e.e.dataIndex1, e.e.dataIndex2)));
-        setSelectedArea({});
-      } else {
-        setSelectedArea({});
-      }
-    };
-    const resetAreaSelect = () => {
-      setData(data_pristine);
-      setSelectedArea({});
-    }
     return (
-      <div className="card other-cards" style={{width: '90%',height: '500px'}}>
-        
-        <h2 style={{ textAlign: 'center' }}>Stock Price</h2>
-        <button onClick={resetAreaSelect}style={{backgroundColor: "#FE7748", borderRadius: '5%', height:'50px', width: '100d0px'}}>Load data</button>
+      <div>
+        <h2>Error loading stocks</h2>
       </div>
-    );
-          }
-          data_pristine = [
-            { date: '2022-01-01', Price: 10 },
-            { date: '2022-01-02', Price: 15 }
-            // additional data points go here
-          ];
-        const source = JSON.parse(abc).Open
-        const dates = {};
-        for (const epoch in source) {
-          const date = new Date(parseInt(epoch));
-          const year = date.getFullYear();
-          const month = String(date.getMonth() + 1).padStart(2, '0');
-          const day = String(date.getDate()).padStart(2, '0');
-          const dateString = `${year}-${month}-${day}`;
-          dates[dateString] = source[epoch];
-        }
-        data_pristine = Object.entries(dates).map(([date, Price]) => ({ date, Price }));
-        const [data_1, setData_1] = React.useState(data_pristine);
-        const formatXAxisTick = (tickItem) => {
-          return moment(tickItem).format('D MMM');
-        }
-        const [selectedArea, setSelectedArea] = useState({});
-        const [domain, setDomain] = useState([0, data_1.length - 1]);
-    
-        const handleAreaSelect = (e) => {
-          if (typeof(e.e) != 'undefined') {
-            setDomain([e.e.dataIndex1, e.e.dataIndex2]);
-            setData_1(data_pristine.slice(Math.min( e.e.dataIndex1, e.e.dataIndex2),Math.max( e.e.dataIndex1, e.e.dataIndex2)));
-            setSelectedArea({});
-          } else {
-            setSelectedArea({});
-          }
-        };
-        const resetAreaSelect = () => {
-          setData_1(data_pristine);
-          setSelectedArea({});
-        }
-        console.log(data)
-        return (
-          <div className="card other-cards" style={{width: '90%',height: '500px'}}>
-            
-            <h2 style={{ textAlign: 'center' }}>Stock Price</h2>
-            <button onClick={resetAreaSelect}style={{backgroundColor: "#FE7748", borderRadius: '5%', height:'50px', width: '100d0px'}}>Load New Data</button>
-            <ResponsiveContainer width="95%" height="85%">
-             <LineChart width={1000} height={300} data={data_1} onMouseDown={(e) => {if (e) setSelectedArea({ x1: e.activeLabel }); console.log('onMouseDown')}} onMouseMove={(e) => {if (e) selectedArea.x1 && setSelectedArea({ ...selectedArea, x2: e.activeLabel })}} onMouseUp={(e) => {
-                  const dataIndex1 = data_1.findIndex((d) => d.date === selectedArea.x1);
-                  const dataIndex2 = data_1.findIndex((d) => d.date === selectedArea.x2);
-                  handleAreaSelect({e: {dataIndex1, dataIndex2}})}}>
-              <XAxis dataKey="date" stroke="#000" tickFormatter={formatXAxisTick}domain={[domain[0], domain[1]]} />
-              <YAxis stroke="#000" />
-              <Tooltip />
-              <Legend />
-              <Line type="monotone" dot={false} dataKey="Price" stroke="#5BDC95" strokeWidth={6}/>
-              {selectedArea.x1 && selectedArea.x2 && (
-              <ReferenceArea
-                x1={selectedArea.x1}
-                x2={selectedArea.x2}
-                fill="#8884d8"
-                fillOpacity={0.3}
-              />
-            )}
-    
-            </LineChart>
-            </ResponsiveContainer>
-          </div>
-        );
+    )
   } else if (card_type === '6') {
     if(arrayData.length===0){
       return (
