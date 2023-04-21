@@ -11,7 +11,7 @@ import tweepy
 import yfinance as yf
 import unicodedata
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
-import auth_key as key
+import twitter_keys as key
 
 class Sentiment:
 
@@ -19,8 +19,8 @@ class Sentiment:
 		self.num_tweets = 100
 
 	def authenticate(self):
-		auth = tweepy.OAuthHandler(key.consumer_key, key.consumer_secret)
-		auth.set_access_token(key.access_token, key.access_token_secret)
+		auth = tweepy.OAuthHandler(key.tw_consumer_key, key.tw_consumer_secret)
+		auth.set_access_token(key.tw_access_token, key.tw_access_token_secret)
 		self.user = tweepy.API(auth)
 		try:
 			self.user = tweepy.API(auth, wait_on_rate_limit=True)
@@ -96,6 +96,7 @@ class Sentiment:
         	'Neutral': round(self.data.Neutral.mean(), 2),
         	'Negative': round(self.data.Negative.mean(), 2)
     }
+  
 		
 		with open('sentiment.json', 'w') as outfile:
 			json.dump(values, outfile)

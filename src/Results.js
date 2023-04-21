@@ -49,7 +49,9 @@ function Results(props) {
 
         {/* Picture below search bar */}
         {/* As of writing API isn't working so random picture is served instead */}
-        <img src="https://picsum.photos/800/200" alt="Random" style={{width: "100%"}}/>
+        <img src="https://www.affordablebackgroundchecks.com/blog/wp-content/uploads/2018/05/Company-Background-Check.jpg" alt="Random" style={{width: "100%", height: "200px"}}/>
+
+
 
         {/* Cards */}
         <div className="card-container">
@@ -289,29 +291,30 @@ function Card(props) {
     }
   } else if (card_type === '3') {
     if (data) {
-      console.log(data[0])
-      console.log(typeof(data))
       return (
-        <div className="card other-cards" style={{width: '25%'}}>
-          <h2>Tweets</h2> 
-          <hr style={{ borderTop: '3px black' }} />
-          <div style={{ height: '300px' }}>
-              <div className="scroll">
-                {data.map((item, index) => (
-                  <div>
-                    {item.hashtags.map(hashtag => (
-                      <p key={hashtag}>#{hashtag}</p>
-                    ))}
-                    <a href={item.link} style={{color: 'white', }}>{item.description}</a>
-                    <hr style={{ borderTop: '1px solid black' }} />
-                  </div>
-                ))}
+        <div className="tweets-card">
+          <h2>Tweets</h2>
+          <hr />
+          <div className="scroll">
+            {data.map((item, index) => (
+              <div key={index} className="tweet-container">
+                <img src="https://static.cdnlogo.com/logos/t/96/twitter-icon.svg" alt="default-avatar" className="tweet-avatar" />
+                <div className="tweet-text">
+                  {item.hashtags.map((hashtag, index) => (
+                    <p key={index} className="tweet-hashtag">{`#${hashtag}`}</p>
+                  ))}
+                  <a href={item.link} className="tweet-link">{item.description}</a>
+                  <hr className="tweet-divider" />
+                </div>
               </div>
+            ))}
           </div>
         </div>
       );
     }
-  } else if (card_type === '4') {
+  }
+  
+   else if (card_type === '4') {
     console.log(data)
     if (data && (data.Positive + data.Neutral + data.Negative) > 0) {
       const [Positive, Neutral, Negative] = [data.Positive, data.Neutral, data.Negative]

@@ -6,9 +6,8 @@ import re
 import jsonpickle
 from pprint import pprint
 from flask_cors import CORS
-from news_key import *
 import traceback
-# from pymongo import MongoClient
+from pymongo import MongoClient
 import requests
 from jsonmerge import merge
 from configparser import ConfigParser
@@ -191,7 +190,7 @@ def layoff(company):
     client = MongoClient(connection_string)
     db = client[database]
     collection = db['layoff_info']
-
+    print(collection)
     pattern = re.compile(f'.*{company}.*', re.IGNORECASE)
     
     result = []
@@ -255,7 +254,6 @@ def display_history(name):
     client = MongoClient(connection_string)
     db = client[database]
     collections = db['ticker_info']
-
     pattern = re.compile(f'.*{name}.*', re.IGNORECASE)
     document = collections.find_one({'company_name': {'$regex': pattern}})
     symbol = document['ticker_symbol']
@@ -279,14 +277,24 @@ api = tweepy.API(auth)
 @app.route('/tweets/<query>')
 def tweets(query):
     tweets = []
+    descriptions = set()  # set to keep track of unique tweet descriptions
+    
     for tweet in tweepy.Cursor(api.search, q=query, lang='en').items(10):
-        # Create a dictionary to store the tweet information of interest
-        tweet_info = {}
-        tweet_info['description'] = tweet.text  # tweet description
-        tweet_info['hashtags'] = [tag['text'] for tag in tweet.entities['hashtags']]  # hashtags
-        tweet_info['link'] = f"https://twitter.com/i/web/status/{tweet.id_str}"  # tweet link
-        tweets.append(tweet_info)
+        # Check if the description is already in the set
+        if tweet.text not in descriptions:
+            # Create a dictionary to store the tweet information of interest
+            tweet_info = {}
+            tweet_info['description'] = tweet.text  # tweet description
+            tweet_info['hashtags'] = [tag['text'] for tag in tweet.entities['hashtags']]  # hashtags
+            tweet_info['link'] = f"https://twitter.com/i/web/status/{tweet.id_str}"  # tweet link
+            tweets.append(tweet_info)
+            
+            # Add the description to the set
+            descriptions.add(tweet.text)
+    
     return jsonify(tweets)
+
+
 
 
 @app.route('/sentiment_analysis/<company>')
