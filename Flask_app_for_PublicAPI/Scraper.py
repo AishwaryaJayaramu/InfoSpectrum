@@ -47,6 +47,6 @@ def fetch_and_insert_into_DB(company):
     # To check if the reviews are fetched properly
     print(reviews) 
 
-    insert_into_db(reviews["result"]["reviews"])
+    insert_into_db(company, reviews["result"]["reviews"])
 
     return reviews["result"]["reviews"]
