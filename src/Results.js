@@ -245,7 +245,9 @@ function Card(props) {
           </div>
         ))
         return (
-          <div className="card" style={{height: "300px"}}>
+          <div className="card" style={{height: "390px"}}>
+            <h2 style={{marginBottom: "0px"}}>News</h2>
+            <hr />
             <div className="carousel-container" style={{height: "280px"}}>
               <div className="carousel">
                 {data.map((item, index) => (
@@ -292,12 +294,13 @@ function Card(props) {
   } else if (card_type === '3') {
     if (data) {
       return (
-        <div className="tweets-card">
+        <div className="tweets-card" >
           <h2>Tweets</h2>
           <hr />
-          <div className="scroll">
+          <div >
             {data.map((item, index) => (
-              <div key={index} className="tweet-container">
+              
+                <div key={index} className="tweet-container" style={{overflowY: "auto"}}>
                 <img src="https://static.cdnlogo.com/logos/t/96/twitter-icon.svg" alt="default-avatar" className="tweet-avatar" />
                 <div className="tweet-text">
                   {item.hashtags.map((hashtag, index) => (
@@ -357,14 +360,14 @@ function Card(props) {
       );
     }
     return (
-      <div className="card other-cards" style={{width: '90%'}}>
+      <div className="card" style={{width: '90%'}}>
         <h2>City Details - Scores</h2> 
         {cityDetails(arrayData)}
       </div>
     );
   } else if (card_type === '7') {
     return (
-      <div className="card other-cards" style={{width: '60%'}}>
+      <div className="card" style={{width: '70%'}}>
         <h2>Layoffs</h2> 
         {layoff(arrayData)}
       </div>

@@ -113,6 +113,11 @@ h3 {
   background-clip: text;
 }
 
+hr {
+  border: none;
+  border-top: 3px solid black;
+}
+
 /* .tweets-card {
   display: flex;
   flex-direction: column;
@@ -136,6 +141,8 @@ h3 {
   padding: 20px;
   margin: 20px;
   background-color: #f7f7f7;
+  overflow: auto;
+  max-height: 300px;
 }
 
 .tweets-card:last-child {
