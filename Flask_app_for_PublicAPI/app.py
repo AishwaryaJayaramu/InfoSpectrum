@@ -49,6 +49,7 @@ def company_news(name):
 
 @app.route('/place/image/<name>')
 def image_api(name):
+    getUAValues()
     try:
         global uaDict
         url = "{}images/".format(str(uaDict[name.title()]))
@@ -64,7 +65,13 @@ def image_api(name):
     return Response(response=jsonpickle.encode(image), status=200, mimetype="application/json")
 
 @app.route('/place/scores/<name>')
+def get_place_scores(name):
+    score = place_score_api(name)
+    return Response(response=jsonpickle.encode(score), status=200, mimetype="application/json")
+
+
 def place_score_api(name):
+    getUAValues()
     try:
         url = "{}scores/".format(str(uaDict[name.title()]))
         result=requests.get(url)
@@ -122,6 +129,7 @@ def getUAValues():
         
 @app.route('/place/housing/<city>')
 def get_rents(city):
+    getUAValues()
     global uaDict
     try:
         url = "{}details".format(uaDict[city.title()])
@@ -157,6 +165,10 @@ def get_rents(city):
     return Response(response=jsonpickle.encode(housing), status=200, mimetype="application/json")
 
 @app.route("/locations/<name>")
+def get_locations(name):
+    data = office_locations(name)
+    return Response(response=jsonpickle.encode(data), status=200, mimetype="application/json")
+
 def office_locations(name):
     #Get all the config info from config.ini
     connection_string = configur['DATABASE']['CONNECTION_STRING']
@@ -179,8 +191,7 @@ def office_locations(name):
         cityData["City"] = location["city"]
         cityData["State"] = location["state"]
         data["Locations"].append(cityData)
-    return Response(response=jsonpickle.encode(data), status=200, mimetype="application/json")
-
+    return data
 
 @app.route("/layoff/<company>", methods=["GET"])
 def layoff(company):
@@ -306,7 +317,6 @@ def fetch_reviews(company):
     return Response(response=jsonpickle.encode(fetch_and_insert_into_DB(company)), status=200, mimetype="application/json")
 
     
-
 if __name__ == '__main__':
     app.debug = True
     getUAValues()
