@@ -19,4 +19,3 @@ Airbnb_review_url = "https://www.glassdoor.com/Reviews/Airbnb-Reviews-E391850.ht
 Snap_review_url = "https://www.glassdoor.com/Reviews/Snap-Reviews-E671946.htm"
 
 Uber_review_url = "https://www.glassdoor.com/Reviews/Uber-Reviews-E575263.htm"
-

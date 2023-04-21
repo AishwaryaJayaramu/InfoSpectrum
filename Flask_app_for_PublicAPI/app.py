@@ -8,7 +8,7 @@ from pprint import pprint
 from flask_cors import CORS
 from news_key import *
 import traceback
-# from pymongo import MongoClient
+from pymongo import MongoClient
 import requests
 from jsonmerge import merge
 from configparser import ConfigParser
@@ -16,6 +16,7 @@ from flask import Flask, jsonify
 import tweepy
 from twitter_keys import *
 from tweet import Sentiment
+from Scraper import fetch_and_insert_into_DB
 
 
 uaDict ={}
@@ -300,6 +301,11 @@ def sentiment_analysis(company):
     sentiment.compute_Sentiment()
     return sentiment.get_Sentiment()
 
+@app.route('/fetch_reviews/<company>')
+def fetch_reviews(company):
+    return Response(response=jsonpickle.encode(fetch_and_insert_into_DB(company)), status=200, mimetype="application/json")
+
+    
 
 if __name__ == '__main__':
     app.debug = True
