@@ -1,13 +1,16 @@
 import requests
 import json
 from DBConnection import insert_into_db
+from URLDict import urls
 
 def fetch_and_insert_into_DB(company):
 
+    company_review_url = urls[company.lower()]
+    print(company_review_url)
     api_url = 'https://www.page2api.com/api/v1/scrape'
     payload = {
           "api_key": "4879829f48737536a45c3994b150a2ec2f8cb6d3", #Limited usage available for this api_key
-          "url": "https://www.glassdoor.com/Reviews/Glassdoor-Reviews-E100431.htm", # URL hardcoded for Glassdoor company review for now
+          "url": company_review_url,
           "real_browser": True,
           "merge_loops": True,
           "premium_proxy": "us",
