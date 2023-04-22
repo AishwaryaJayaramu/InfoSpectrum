@@ -71,7 +71,7 @@ function Stocks(props) {
   const [data, setData] = useState(null);
   const stocksRef = React.useRef(null);
   useEffect(() => {
-      const endpoint = `http://localhost:8000/history/${props.query}`;
+      const endpoint = `https://flask-app-z7j2wggxkq-uc.a.run.app/history/${props.query}`;
       const fetchData = async () => {
           const response = await fetch(endpoint);
           const datum = await response.json();
@@ -167,19 +167,19 @@ function Card(props) {
         let endpoint;
 
         if (card_type === '1') {
-          endpoint = `http://localhost:8000/description/${props.query}`;
+          endpoint = `https://flask-app-z7j2wggxkq-uc.a.run.app/description/${props.query}`;
         } else if (card_type === '2') {
-          endpoint = `http://localhost:8000/company/${props.query}`;
+          endpoint = `https://flask-app-z7j2wggxkq-uc.a.run.app/company/${props.query}`;
         } else if (card_type === '3') {
-          endpoint = `http://localhost:8000/tweets/${props.query}`;
+          endpoint = `https://flask-app-z7j2wggxkq-uc.a.run.app/tweets/${props.query}`;
         } else if (card_type === '4') {
-          endpoint = `http://localhost:8000/sentiment_analysis/${props.query}`;
+          endpoint = `https://flask-app-z7j2wggxkq-uc.a.run.app/sentiment_analysis/${props.query}`;
         } else if (card_type === '5') {
-          endpoint = `http://localhost:8000/history/${props.query}`;
+          endpoint = `https://flask-app-z7j2wggxkq-uc.a.run.app/history/${props.query}`;
         } else if (card_type === '6') {
-          endpoint = `http://localhost:8000/location_scores/${props.query}`;
+          endpoint = `https://flask-app-z7j2wggxkq-uc.a.run.app/location_scores/${props.query}`;
         } else if (card_type === '7') {
-          endpoint = `http://localhost:8000/layoff/${props.query}`;
+          endpoint = `https://flask-app-z7j2wggxkq-uc.a.run.app/layoff/${props.query}`;
         }
 
         const response = await fetch(endpoint);
