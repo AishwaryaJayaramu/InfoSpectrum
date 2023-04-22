@@ -346,26 +346,26 @@ function Card(props) {
     )
   } else if (card_type === '6') {
     if(arrayData.length===0){
+      console.log('no city data')
+    } else {
       return (
-        <div className="card other-cards" style={{width: '60%'}}>
-          <h2>City Details</h2> 
-          <p>Loading...</p>
+        <div className="card other-cards" style={{width: '90%'}}>
+          <h2>City Details - Scores</h2> 
+          {cityDetails(arrayData)}
         </div>
       );
     }
-    return (
-      <div className="card other-cards" style={{width: '90%'}}>
-        <h2>City Details - Scores</h2> 
-        {cityDetails(arrayData)}
-      </div>
-    );
   } else if (card_type === '7') {
-    return (
-      <div className="card other-cards" style={{width: '60%'}}>
-        <h2>Layoffs</h2> 
-        {layoff(arrayData)}
-      </div>
-    );
+    if(arrayData.length===0 || arrayData.data.length===0){
+      console.log('no layoff data')
+    } else {
+      return (
+        <div className="card other-cards" style={{width: '60%'}}>
+          <h2>Layoffs</h2> 
+          {layoff(arrayData)}
+        </div>
+      );
+    }
   } else if (card_type === '8') {
     return (
       <div className="card other-cards" style={{width: '25%'}}>
