@@ -83,15 +83,15 @@ def place_score_api(name):
         score['Safety'] = round(response['categories'][7]['score_out_of_10'],2)
         score['Environmental Quality'] = round(response['categories'][10]['score_out_of_10'],2)
         score['Taxation'] =10.0- round(response['categories'][12]['score_out_of_10'],2)
-        print(score)
+        # print(score)
     except Exception as e:
         score = {'Cost of Living':0,
         'Commute':0,
         'Safety':0,
         'Environmental Quality':0,
         'Taxation':0}
-        print("The Place Score Api have exception")
-        traceback.print_exc()
+        # print("The Place Score Api have exception")
+        # traceback.print_exc()
     return score
 
 
