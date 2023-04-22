@@ -42,7 +42,7 @@ body {
 }
 
 .other-cards {
-  height: 200px;
+  height: 380px;
   overflow: auto;
 }
 
@@ -137,12 +137,13 @@ hr {
   width: 300px;
   border: 1px solid #000000;
   border-radius : 25px;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   padding: 20px;
   margin: 20px;
   background-color: #f7f7f7;
   overflow: auto;
-  max-height: 300px;
+  max-height: 380px;
+  padding-bottom: 30px;
 }
 
 .tweets-card:last-child {

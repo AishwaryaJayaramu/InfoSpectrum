@@ -5,9 +5,8 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, Re
 import moment from 'moment';
 import { PieChart } from 'react-minimal-pie-chart';
 
-import layoff from './Company/layoffs.js';
-import cityDetails from './Company/citydetails';
-
+import Layoffs from './Company/layoffs.js';
+import CityDetails from './Company/citydetails';
 import './Results.css';
 
 
@@ -160,6 +159,7 @@ function Card(props) {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
   const [arrayData, setArrayData] = useState([]);
+  const [layoffData, setLayoffData] = useState([]);
   var flag = false
   useEffect(() => {
     let isSubscribed = true;
@@ -188,9 +188,12 @@ function Card(props) {
         const data = await response.json();
 
         if (isSubscribed) {
-          if (card_type==6 || card_type==7){
+          if (card_type==6){
             setArrayData(data);
           } 
+          if (card_type == 7){
+            setLayoffData(data);
+          }
           setData(data);
         }
       } catch (error) {
@@ -295,7 +298,7 @@ function Card(props) {
     if (data) {
       return (
         <div className="tweets-card" >
-          <h2>Tweets</h2>
+          <h2 style={{ marginBottom: '0.5rem' }}>Tweets</h2>
           <hr />
           <div >
             {data.map((item, index) => (
@@ -322,29 +325,48 @@ function Card(props) {
     if (data && (data.Positive + data.Neutral + data.Negative) > 0) {
       const [Positive, Neutral, Negative] = [data.Positive, data.Neutral, data.Negative]
       return (
-        <div className="card other-cards" style={{width: '25%'}}>      
-          <h2>Analysis</h2>
+        <div className="card other-cards" style={{ width: '25%', position: 'relative', overflow: 'hidden' }}>
+          <h2 style={{ marginBottom: '0.5rem' }}>Analysis</h2>
+          <hr />
           <PieChart
             animation
             animationDuration={500}
             animationEasing="ease-out"
             data={[
-              { title: 'Positive', value: Positive, color: '#E38627' },
-              { title: 'Neutral', value: Neutral, color: '#C13C37' },
-              { title: 'Negative', value: Negative, color: '#6A2135' },
+              { title: 'Positive', value: Positive, color: '#5cb85c' },
+              { title: 'Neutral', value: Neutral, color: '#f0ad4e' },
+              { title: 'Negative', value: Negative, color: '#d9534f' },
             ]}
-            labelPosition={50}
-            labelStyle={{
-              fontSize: "10px",
-              fontColor: "#FFFFFF",
-              fontWeight: "400",
+            lineWidth={50}
+            paddingAngle={3}
+            radius={30}
+          />
+          <Legend
+            wrapperStyle={{
+              position: 'absolute',
+              top: 90,
+              right: 0,
+              marginRight: '1rem',
+              marginTop: '1rem',
             }}
-            label={(props) => { return props.dataEntry.title;}}
+            verticalAlign="top"
+            align="right"
+            iconSize={10}
+            iconType="circle"
+            formatter={(value, entry) => `${entry.title}`}
+            payload={[
+              { title: 'Positive', color: '#5cb85c' },
+              { title: 'Neutral', color: '#f0ad4e' },
+              { title: 'Negative', color: '#d9534f' },
+            ]}
           />
         </div>
       );
     }
-  } else if (card_type === '5') {
+  }
+  
+
+ else if (card_type === '5') {
     return (
       <div>
         <h2>Error loading stocks</h2>
@@ -362,14 +384,14 @@ function Card(props) {
     return (
       <div className="card" style={{width: '90%'}}>
         <h2>City Details - Scores</h2> 
-        {cityDetails(arrayData)}
+        {<CityDetails tbodyData={arrayData}/>}
       </div>
     );
   } else if (card_type === '7') {
     return (
       <div className="card" style={{width: '70%'}}>
         <h2>Layoffs</h2> 
-        {layoff(arrayData)}
+        {<Layoffs data={layoffData}/>}
       </div>
     );
   } else if (card_type === '8') {
