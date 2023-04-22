@@ -302,10 +302,22 @@ def display_history(name):
     quote = yf.Ticker(symbol)	
 	#use the quote to pull the historical data from Yahoo finance
     hist = quote.history(period=period, interval=interval)
+    hist = hist.loc[:,['Close']]
+
+    # Convert dataframe to dictionary
+    data_dict = hist.to_dict('records')
+
+    # Create list of objects with desired format
+    result = []
+    for row in hist.iterrows():
+        date = row[0].strftime('%Y-%m-%d')
+        close = row[1][0]
+        result.append({'date': date, 'Price': close})
+
 	#convert the historical data to JSON
     data = hist.to_json()
 	#return the JSON in the HTTP response
-    return Response(response=jsonpickle.encode(data), status=200, mimetype="application/json")
+    return jsonify(result)
 
 auth = tweepy.OAuthHandler(tw_consumer_key, tw_consumer_secret)
 auth.set_access_token(tw_access_token, tw_access_token_secret)
