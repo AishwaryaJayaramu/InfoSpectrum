@@ -69,6 +69,24 @@ def get_place_scores(name):
     score = place_score_api(name)
     return Response(response=jsonpickle.encode(score), status=200, mimetype="application/json")
 
+def get_from_db(name):
+    connection_string = configur['DATABASE']['CONNECTION_STRING']
+    database = configur['DATABASE']['DB']
+
+    #Get layoff details from database
+    client = MongoClient(connection_string)
+    db = client[database]
+    collections = db['place_scores']
+    document = collections.find_one({'city': name}, {'_id': False})
+    print(document)
+    if not document:
+        return {}
+    data  = {'Cost of Living':document["cost_of_living"],
+        'Commute':document["commute"],
+        'Safety':document["safety"],
+        'Environmental Quality':document["environmental_quality"],
+        'Taxation':document["taxation"]}
+    return data
 
 def place_score_api(name):
     getUAValues()
@@ -90,6 +108,10 @@ def place_score_api(name):
         'Safety':0,
         'Environmental Quality':0,
         'Taxation':0}
+        name = re.split('[ ,/]',name)[0]
+        data = get_from_db(name.capitalize())
+        if data != {}:
+            score = data
         # print("The Place Score Api have exception")
         # traceback.print_exc()
     return score
