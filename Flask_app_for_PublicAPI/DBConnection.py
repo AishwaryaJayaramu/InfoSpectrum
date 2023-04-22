@@ -1,7 +1,7 @@
 from pymongo import MongoClient
 from configparser import ConfigParser
 
-config_file = "Flask_app_for_PublicAPI/config.ini"
+config_file = "config.ini"
 configure = ConfigParser()
 configure.read(config_file)
 

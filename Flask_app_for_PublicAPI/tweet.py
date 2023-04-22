@@ -11,7 +11,7 @@ import tweepy
 import yfinance as yf
 import unicodedata
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
-import auth_key as key
+# import auth_key as key
 
 class Sentiment:
 

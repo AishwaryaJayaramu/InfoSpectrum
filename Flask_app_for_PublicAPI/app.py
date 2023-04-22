@@ -6,7 +6,7 @@ import re
 import jsonpickle
 from pprint import pprint
 from flask_cors import CORS
-from news_key import *
+# from news_key import *
 import traceback
 from pymongo import MongoClient
 import requests
@@ -92,7 +92,7 @@ def place_score_api(name):
         'Taxation':0}
         print("The Place Score Api have exception")
         traceback.print_exc()
-    return Response(response=jsonpickle.encode(score), status=200, mimetype="application/json")
+    return score
 
 
 
@@ -218,16 +218,18 @@ def layoff(company):
     
 @app.route('/location_scores/<name>')
 def location_scores(name):
-    loc_url = "http://localhost:8000/locations/{}".format(name)
-    result = requests.get(loc_url).json()
+    # loc_url = "http://localhost:8000/locations/{}".format(name)
+    # result = requests.get(loc_url).json()
+    result = office_locations(name)
     if 'error' in result:
         abort(404, description="Requested item not found")
     locations = result['Locations']
     data = []
     for loc in locations:
         location = loc['City']
-        scores_url = "http://localhost:8000/place/scores/{}".format((location))
-        scores = requests.get(scores_url).json()
+        # scores_url = "http://localhost:8000/place/scores/{}".format((location))
+        # scores = requests.get(scores_url).json()
+        scores = place_score_api(location)
         data.append(merge(loc, scores))
     return Response(response=jsonpickle.encode(data), status=200, mimetype="application/json")
 
