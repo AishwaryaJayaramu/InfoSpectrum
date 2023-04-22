@@ -14,9 +14,9 @@ from jsonmerge import merge
 from configparser import ConfigParser
 from flask import Flask, jsonify
 import tweepy
-# from twitter_keys import *
-# from tweet import Sentiment
-# from Scraper import fetch_and_insert_into_DB
+from twitter_keys import *
+from tweet import Sentiment
+from Scraper import fetch_and_insert_into_DB
 
 
 uaDict ={}
@@ -83,16 +83,16 @@ def place_score_api(name):
         score['Safety'] = round(response['categories'][7]['score_out_of_10'],2)
         score['Environmental Quality'] = round(response['categories'][10]['score_out_of_10'],2)
         score['Taxation'] =10.0- round(response['categories'][12]['score_out_of_10'],2)
-        print(score)
+        # print(score)
     except Exception as e:
         score = {'Cost of Living':0,
         'Commute':0,
         'Safety':0,
         'Environmental Quality':0,
         'Taxation':0}
-        print("The Place Score Api have exception")
-        traceback.print_exc()
-    return Response(response=jsonpickle.encode(score), status=200, mimetype="application/json")
+        # print("The Place Score Api have exception")
+        # traceback.print_exc()
+    return score
 
 
 
@@ -218,16 +218,18 @@ def layoff(company):
     
 @app.route('/location_scores/<name>')
 def location_scores(name):
-    loc_url = "http://localhost:8000/locations/{}".format(name)
-    result = requests.get(loc_url).json()
+    # loc_url = "http://localhost:8000/locations/{}".format(name)
+    # result = requests.get(loc_url).json()
+    result = office_locations(name)
     if 'error' in result:
         abort(404, description="Requested item not found")
     locations = result['Locations']
     data = []
     for loc in locations:
         location = loc['City']
-        scores_url = "http://localhost:8000/place/scores/{}".format((location))
-        scores = requests.get(scores_url).json()
+        # scores_url = "http://localhost:8000/place/scores/{}".format((location))
+        # scores = requests.get(scores_url).json()
+        scores = place_score_api(location)
         data.append(merge(loc, scores))
     return Response(response=jsonpickle.encode(data), status=200, mimetype="application/json")
 
@@ -283,9 +285,9 @@ def display_history(name):
 	#return the JSON in the HTTP response
     return Response(response=jsonpickle.encode(data), status=200, mimetype="application/json")
 
-# auth = tweepy.OAuthHandler(tw_consumer_key, tw_consumer_secret)
-# auth.set_access_token(tw_access_token, tw_access_token_secret)
-# api = tweepy.API(auth)
+auth = tweepy.OAuthHandler(tw_consumer_key, tw_consumer_secret)
+auth.set_access_token(tw_access_token, tw_access_token_secret)
+api = tweepy.API(auth)
 
 
 @app.route('/tweets/<query>')
