@@ -3,14 +3,18 @@ import pandas as pd
 import re
 import math
 import datetime as dt
-import nltk
+# import nltk
 import json
 import matplotlib.pyplot as plt
 import os
-import tweepy
+# import tweepy
 import yfinance as yf
 import unicodedata
+<<<<<<< HEAD
+# from nltk.sentiment.vader import SentimentIntensityAnalyzer
+=======
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
+>>>>>>> 56c3e460860f50d3b215fef5b7223936d19943b7
 # import auth_key as key
 
 class Sentiment:
