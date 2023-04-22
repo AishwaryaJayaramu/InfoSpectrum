@@ -3,15 +3,15 @@ import pandas as pd
 import re
 import math
 import datetime as dt
-import nltk
+# import nltk
 import json
 import matplotlib.pyplot as plt
 import os
-import tweepy
+# import tweepy
 import yfinance as yf
 import unicodedata
-from nltk.sentiment.vader import SentimentIntensityAnalyzer
-import auth_key as key
+# from nltk.sentiment.vader import SentimentIntensityAnalyzer
+# import auth_key as key
 
 class Sentiment:
 

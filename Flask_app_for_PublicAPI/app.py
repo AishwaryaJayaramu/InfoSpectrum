@@ -6,7 +6,7 @@ import re
 import jsonpickle
 from pprint import pprint
 from flask_cors import CORS
-from news_key import *
+# from news_key import *
 import traceback
 from pymongo import MongoClient
 import requests
@@ -14,9 +14,9 @@ from jsonmerge import merge
 from configparser import ConfigParser
 from flask import Flask, jsonify
 import tweepy
-from twitter_keys import *
-from tweet import Sentiment
-from Scraper import fetch_and_insert_into_DB
+# from twitter_keys import *
+# from tweet import Sentiment
+# from Scraper import fetch_and_insert_into_DB
 
 
 uaDict ={}
@@ -283,9 +283,9 @@ def display_history(name):
 	#return the JSON in the HTTP response
     return Response(response=jsonpickle.encode(data), status=200, mimetype="application/json")
 
-auth = tweepy.OAuthHandler(tw_consumer_key, tw_consumer_secret)
-auth.set_access_token(tw_access_token, tw_access_token_secret)
-api = tweepy.API(auth)
+# auth = tweepy.OAuthHandler(tw_consumer_key, tw_consumer_secret)
+# auth.set_access_token(tw_access_token, tw_access_token_secret)
+# api = tweepy.API(auth)
 
 
 @app.route('/tweets/<query>')
