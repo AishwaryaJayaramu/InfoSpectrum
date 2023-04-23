@@ -72,7 +72,7 @@ function Stocks(props) {
   const [data, setData] = useState(null);
   const stocksRef = React.useRef(null);
   useEffect(() => {
-      const endpoint = `http://localhost:8000/history/${props.query}`;
+      const endpoint = `http://127.0.0.1:8000/history/${props.query}`;
       const fetchData = async () => {
           const response = await fetch(endpoint);
           setData(await response.json());
@@ -156,9 +156,9 @@ function Card(props) {
         } else if (card_type === '2') {
           endpoint = `https://flask-app-z7j2wggxkq-uc.a.run.app/company/${props.query}`;
         } else if (card_type === '3') {
-          endpoint = `https://flask-app-z7j2wggxkq-uc.a.run.app/tweets/${props.query}`;
+          endpoint = `http://127.0.0.1:8000/tweets/${props.query}`;
         } else if (card_type === '4') {
-          endpoint = `https://flask-app-z7j2wggxkq-uc.a.run.app/sentiment_analysis/${props.query}`;
+          endpoint = `http://127.0.0.1:8000/sentiment_analysis/${props.query}`;
         } else if (card_type === '5') {
           endpoint = `https://flask-app-z7j2wggxkq-uc.a.run.app/history/${props.query}`;
         } else if (card_type === '6') {
@@ -359,19 +359,14 @@ if (data && (data.Positive + data.Neutral + data.Negative) > 0) {
       console.log('no city data')
     } else {
       return (
-        <div className="card other-cards" style={{width: '90%'}}>
+        <div className="card" style={{width: '90%'}}>
           <h2>City Details - Scores</h2> 
-          {cityDetails(arrayData)}
+          {<CityDetails tbodyData={arrayData}/>}
         </div>
       );
     }
 
-    return (
-      <div className="card" style={{width: '90%'}}>
-        <h2>City Details - Scores</h2> 
-        {<CityDetails tbodyData={arrayData}/>}
-      </div>
-    );
+    
   } else if (card_type === '7') {
     return (
       <div className="card" style={{width: '70%'}}>
