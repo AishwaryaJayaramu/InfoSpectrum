@@ -116,7 +116,7 @@ function Stocks(props) {
               <YAxis stroke="#000" />
               <Tooltip />
               <Legend />
-              <Line type="monotone" dot={false} dataKey="Price" stroke="#5BDC95" strokeWidth={6}/>
+              <Line type="monotone" dot={false} dataKey="Price" stroke="#5772ba" strokeWidth={6}/>
               {selectedArea.x1 && selectedArea.x2 && (
                 <ReferenceArea
                   x1={selectedArea.x1}
