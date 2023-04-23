@@ -7,6 +7,7 @@ import { PieChart } from 'react-minimal-pie-chart';
 
 import Layoffs from './Company/layoffs.js';
 import CityDetails from './Company/citydetails';
+import Reviews from './Company/reviews.js';
 import './Results.css';
 
 
