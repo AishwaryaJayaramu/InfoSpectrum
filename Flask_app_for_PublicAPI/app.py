@@ -328,7 +328,7 @@ def tweets(query):
     tweets = []
     descriptions = set()  # set to keep track of unique tweet descriptions
     
-    for tweet in tweepy.Cursor(api.search_tweets, q=query, lang='en').items(10):
+    for tweet in tweepy.Cursor(api.search, q=query, lang='en').items(10):
         # Check if the description is already in the set
         if tweet.text not in descriptions:
             # Create a dictionary to store the tweet information of interest
