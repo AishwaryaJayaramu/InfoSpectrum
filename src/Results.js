@@ -37,18 +37,18 @@ function Results(props) {
   return (
       <div>
         {/* Search bar at the top */}
-        <div style={{backgroundColor: "#1A2237", borderColor: "#0ebaa6", height:'50px', width: '100%', display: "flex"}} className="search-bar">
-                <button style={{backgroundColor: "#FE7748", borderRadius: '50%', borderColor: "#0ebaa6", height:'50px', width: '50px'}} onClick={() => {navigate('/search'); window.location.reload()}}>
+        <div style={{backgroundColor: "#5772ba", borderColor: "#0ebaa6", height:'50px', width: '100%', display: "flex"}} className="search-bar">
+                <button style={{backgroundColor: "#FFFFFF", borderRadius: '50%', borderColor: "#0ebaa6", height:'50px', width: '50px'}} onClick={() => {navigate('/search'); window.location.reload()}}>
                   <FaCaretLeft />
                 </button>
                 <div style={{marginLeft: "auto",top: '0', height: '50px'}} className="title">
-                    <h3 style={{height: '50px', margin: '0', marginRight: '10px'}}>InfoSpectrum</h3>
+  <h3 style={{height: '50px', margin: '0', marginRight: '10px', color: 'black'}}>InfoSpectrum</h3>
+
                 </div>
         </div>
 
         {/* Picture below search bar */}
         {/* As of writing API isn't working so random picture is served instead */}
-        <img src="https://www.affordablebackgroundchecks.com/blog/wp-content/uploads/2018/05/Company-Background-Check.jpg" alt="Random" style={{width: "100%", height: "200px"}}/>
 
 
 
@@ -106,6 +106,7 @@ function Stocks(props) {
     return (
       <div className="card other-cards" style={{width: '90%',height: '500px'}} key={data}>
         <h2 style={{ textAlign: 'center' }}>Stock Price</h2>
+
         {data ? (
           <ResponsiveContainer width="95%" height="85%" key={typeof(data)}>
             <LineChart width={1000} height={300} data={data} onMouseDown={(e) => {if (e) setSelectedArea({ x1: e.activeLabel }); console.log('onMouseDown')}} onMouseMove={(e) => {if (e) selectedArea.x1 && setSelectedArea({ ...selectedArea, x2: e.activeLabel })}} onMouseUp={(e) => {
@@ -152,7 +153,7 @@ function Card(props) {
         let endpoint;
 
         if (card_type === '1') {
-          endpoint = `https://flask-app-z7j2wggxkq-uc.a.run.app/description/${props.query}`;
+          endpoint = `http://127.0.0.1:8000/description/${props.query}`;
         } else if (card_type === '2') {
           endpoint = `https://flask-app-z7j2wggxkq-uc.a.run.app/company/${props.query}`;
         } else if (card_type === '3') {
@@ -164,7 +165,7 @@ function Card(props) {
         } else if (card_type === '6') {
           endpoint = `https://flask-app-z7j2wggxkq-uc.a.run.app/location_scores/${props.query}`;
         } else if (card_type === '7') {
-          endpoint = `https://flask-app-z7j2wggxkq-uc.a.run.app/layoff/${props.query}`;
+          endpoint = `http://127.0.0.1:8000/layoff/${props.query}`;
         }
 
         const response = await fetch(endpoint);
@@ -207,7 +208,8 @@ function Card(props) {
     return (
       <div className="card" style={{width: "90%"}}>
         <div className="description-card">
-        <h2>{props.query}</h2>
+        <h2>{props.query.charAt(0).toUpperCase() + props.query.slice(1)}</h2>
+        <hr />
         {data && <p style={{overflowY: "auto"}}>{obj.description}</p>}
         </div>
       </div>
@@ -305,47 +307,41 @@ function Card(props) {
   
    else if (card_type === '4') {
     console.log(data)
-if (data && (data.Positive + data.Neutral + data.Negative) > 0) {
-  const [Positive, Neutral, Negative] = [(data.Positive), parseFloat(data.Neutral), parseFloat(data.Negative)]
-  // const total = Positive + Neutral + Negative
-  return (
-    <div className="card other-cards" style={{ width: '25%', position: 'relative', overflow: 'hidden' }}>
-      <h2 style={{ marginBottom: '0.5rem' }}>Analysis</h2>
-      <hr />
-      <PieChart
-        animation
-        animationDuration={500}
-        animationEasing="ease-out"
-        data={[          { title: 'Positive', value: Positive, color: '#5cb85c' },          { title: 'Neutral', value: Neutral, color: '#f0ad4e' },          { title: 'Negative', value: Negative, color: '#d9534f' },        ]}
-        lineWidth={50}
-        paddingAngle={3}
-        radius={30}
-      />
-        <Legend
-        wrapperStyle={{
-          position: 'absolute',
-          top: 90,
-          right: 0,
-          marginRight: '1rem',
-          marginTop: '1rem',
-        }}
-        verticalAlign="top"
-        align="right"
-        iconSize={10}
-        iconType="circle"
-        formatter={(value, entry) => `${entry.title} (${(entry.value * 100).toFixed(2)}%)`}
-        payload={[
-          { title: 'Positive', value: Positive, color: '#5cb85c' },
-          { title: 'Neutral', value: Neutral, color: '#f0ad4e' },
-          { title: 'Negative', value: Negative, color: '#d9534f' },
-        ]}
-  />
-
-    </div>
-  );
-}
-
+    if (data && (data.Positive + data.Neutral + data.Negative) > 0) {
+      const [Positive, Neutral, Negative] = [(data.Positive), parseFloat(data.Neutral), parseFloat(data.Negative)]
+      return (
+        <div className="card other-cards" style={{ width: '25%', position: 'relative', overflow: 'hidden' }}>
+          <h2 style={{ marginBottom: '0.5rem' }}>Analysis</h2>
+          <hr />
+          <PieChart
+            animation
+            animationDuration={500}
+            animationEasing="ease-out"
+            data={[            { title: 'Positive', value: Positive, color: '#5cb85c' },            { title: 'Neutral', value: Neutral, color: '#f0ad4e' },            { title: 'Negative', value: Negative, color: '#d9534f' },          ]}
+            lineWidth={50}
+            paddingAngle={3}
+            radius={30}
+          />
+          <Legend
+            wrapperStyle={{
+              position: 'absolute',
+              top: 90,
+              right: 0,
+              marginRight: '1rem',
+              marginTop: '1rem',
+              flexDirection: 'column',
+            }}
+            verticalAlign="top"
+            iconSize={10}
+            iconType="circle"
+            formatter={(value, entry) => `${entry.title} (${(entry.value * 100).toFixed(2)}%)`}
+            payload={[            { title: 'Positive', value: Positive, color: '#5cb85c' },            { title: 'Neutral', value: Neutral, color: '#f0ad4e' },            { title: 'Negative', value: Negative, color: '#d9534f' },          ]}
+          />
+        </div>
+      );
+    }
   }
+  
   
 
  else if (card_type === '5') {
