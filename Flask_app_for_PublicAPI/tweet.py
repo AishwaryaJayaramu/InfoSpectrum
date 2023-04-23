@@ -33,7 +33,7 @@ class Sentiment:
 
 	def get_Tweets(self, keyword):
 		print("instide get_tweets")
-		data = tweepy.Cursor(self.user.search, q=str(keyword), since_id="2023-04-01", tweet_mode="extended", lang='en').items(self.num_tweets)
+		data = tweepy.Cursor(self.user.search_tweets, q=str(keyword), since_id="2023-04-01", tweet_mode="extended", lang='en').items(self.num_tweets)
 		tweets_list = []
 		# print(data)
 		for tweet in data:
