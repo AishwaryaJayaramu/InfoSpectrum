@@ -19,6 +19,8 @@ from tweet import Sentiment
 from Scraper import fetch_and_insert_into_DB
 import nltk
 nltk.download('vader_lexicon')
+from elasticsearch import Elasticsearch
+
 
 
 uaDict ={}
@@ -133,7 +135,7 @@ def description_api(name):
         # response = requests.request("GET", url, headers=headers, params=querystring)    
         # json_data = response.json()
         # result = {"description":json_data['description']}
-        result = {"description": "asdffg"}
+        result = {"description":"WIll come soon"}
         
     except Exception as e:
         print("The Rapid Api have exception ")
@@ -219,25 +221,37 @@ def office_locations(name):
 
 @app.route("/layoff/<company>", methods=["GET"])
 def layoff(company):
-    #Get all the config info from config.ini
-    connection_string = configur['DATABASE']['CONNECTION_STRING']
-    database = configur['DATABASE']['DB']
+    ELASTIC_PASSWORD = "pass"
+    CLOUD_ID = "deploy"
+    es = Elasticsearch(
+        cloud_id=CLOUD_ID,
+        basic_auth=("elastic", ELASTIC_PASSWORD)
+    )
 
-    #Get layoff details from database
-    client = MongoClient(connection_string)
-    db = client[database]
-    collection = db['layoff_info']
-    print(collection)
-    pattern = re.compile(f'.*{company}.*', re.IGNORECASE)
-    
-    result = []
-    for data in collection.find({'Company':{'$regex': pattern}}):
-        if 'Address' in data:
-            address=data['Address']
-        else:
-             address ="NA"      
-        result.append({'Location': str(data['County/Parish']),'Received Date': str(data['Received_Date']),'Effective Date': str(data['Effective_Date']),'No of Employees': str(data['No_Of_Employees']),'Address': address})
-    return jsonify({'data':result})
+    try:
+        search_word = company
+        query = {
+            "query": {
+                "match": {
+                    "Company_First_Word": {
+                        "query": search_word
+                    }
+                }
+            },
+            "size": 100,
+            "_source": {
+                "excludes": ["Company_First_Word"]
+            }
+        }
+
+        res = es.search(index="search-layoff", body=query)
+        result = []
+        for hit in res["hits"]["hits"]:
+            result.append(hit["_source"])
+        return jsonify({'data': result})
+
+    except Exception as e:
+        return jsonify({'error': str(e)})
 
     
 @app.route('/location_scores/<name>')
