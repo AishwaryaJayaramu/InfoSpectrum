@@ -322,47 +322,46 @@ function Card(props) {
   
    else if (card_type === '4') {
     console.log(data)
-    if (data && (data.Positive + data.Neutral + data.Negative) > 0) {
-      const [Positive, Neutral, Negative] = [data.Positive, data.Neutral, data.Negative]
-      return (
-        <div className="card other-cards" style={{ width: '25%', position: 'relative', overflow: 'hidden' }}>
-          <h2 style={{ marginBottom: '0.5rem' }}>Analysis</h2>
-          <hr />
-          <PieChart
-            animation
-            animationDuration={500}
-            animationEasing="ease-out"
-            data={[
-              { title: 'Positive', value: Positive, color: '#5cb85c' },
-              { title: 'Neutral', value: Neutral, color: '#f0ad4e' },
-              { title: 'Negative', value: Negative, color: '#d9534f' },
-            ]}
-            lineWidth={50}
-            paddingAngle={3}
-            radius={30}
-          />
-          <Legend
-            wrapperStyle={{
-              position: 'absolute',
-              top: 90,
-              right: 0,
-              marginRight: '1rem',
-              marginTop: '1rem',
-            }}
-            verticalAlign="top"
-            align="right"
-            iconSize={10}
-            iconType="circle"
-            formatter={(value, entry) => `${entry.title}`}
-            payload={[
-              { title: 'Positive', color: '#5cb85c' },
-              { title: 'Neutral', color: '#f0ad4e' },
-              { title: 'Negative', color: '#d9534f' },
-            ]}
-          />
-        </div>
-      );
-    }
+if (data && (data.Positive + data.Neutral + data.Negative) > 0) {
+  const [Positive, Neutral, Negative] = [(data.Positive), parseFloat(data.Neutral), parseFloat(data.Negative)]
+  // const total = Positive + Neutral + Negative
+  return (
+    <div className="card other-cards" style={{ width: '25%', position: 'relative', overflow: 'hidden' }}>
+      <h2 style={{ marginBottom: '0.5rem' }}>Analysis</h2>
+      <hr />
+      <PieChart
+        animation
+        animationDuration={500}
+        animationEasing="ease-out"
+        data={[          { title: 'Positive', value: Positive, color: '#5cb85c' },          { title: 'Neutral', value: Neutral, color: '#f0ad4e' },          { title: 'Negative', value: Negative, color: '#d9534f' },        ]}
+        lineWidth={50}
+        paddingAngle={3}
+        radius={30}
+      />
+        <Legend
+        wrapperStyle={{
+          position: 'absolute',
+          top: 90,
+          right: 0,
+          marginRight: '1rem',
+          marginTop: '1rem',
+        }}
+        verticalAlign="top"
+        align="right"
+        iconSize={10}
+        iconType="circle"
+        formatter={(value, entry) => `${entry.title} (${(entry.value * 100).toFixed(2)}%)`}
+        payload={[
+          { title: 'Positive', value: Positive, color: '#5cb85c' },
+          { title: 'Neutral', value: Neutral, color: '#f0ad4e' },
+          { title: 'Negative', value: Negative, color: '#d9534f' },
+        ]}
+  />
+
+    </div>
+  );
+}
+
   }
   
 
