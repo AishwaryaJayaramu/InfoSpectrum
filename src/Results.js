@@ -359,19 +359,14 @@ if (data && (data.Positive + data.Neutral + data.Negative) > 0) {
       console.log('no city data')
     } else {
       return (
-        <div className="card other-cards" style={{width: '90%'}}>
-          <h2>City Details - Scores</h2> 
-          {cityDetails(arrayData)}
-        </div>
-      );
-    }
-
-    return (
       <div className="card" style={{width: '90%'}}>
         <h2>City Details - Scores</h2> 
         {<CityDetails tbodyData={arrayData}/>}
       </div>
     );
+    }
+
+    
   } else if (card_type === '7') {
     return (
       <div className="card" style={{width: '70%'}}>
