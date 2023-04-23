@@ -171,7 +171,7 @@ function Card(props) {
         const data = await response.json();
 
         if (isSubscribed) {
-          if (card_type==6){
+          if (card_type==6 || card_type == 8){
             setArrayData(data);
           } 
           if (card_type == 7){
@@ -379,7 +379,7 @@ if (data && (data.Positive + data.Neutral + data.Negative) > 0) {
     return (
       <div className="card other-cards" style={{width: '25%'}}>
         <h2>Employee Reviews</h2> 
-        <p>Not implemented</p>
+        {<Reviews tbodyData={arrayData}/>}
       </div>
     );
   } else {
