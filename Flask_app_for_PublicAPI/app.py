@@ -133,10 +133,10 @@ def description_api(name):
     }
         querystring = {"query":name+".com"}
 
-        # response = requests.request("GET", url, headers=headers, params=querystring)    
-        # json_data = response.json()
-        # result = {"description":json_data['description']}
-        result = {"description":"WIll come soon"}
+        response = requests.request("GET", url, headers=headers, params=querystring)    
+        json_data = response.json()
+        result = {"description":json_data['description']}
+        # result = {"description":"WIll come soon"}
         
     except Exception as e:
         print("The Rapid Api have exception ")
@@ -345,7 +345,7 @@ def tweets(query):
     tweets = []
     descriptions = set()  # set to keep track of unique tweet descriptions
     
-    for tweet in tweepy.Cursor(api.search_tweets, q=query, lang='en').items(10):
+    for tweet in tweepy.Cursor(api.search_tweets, q=query, lang='en').items(50):
         # Check if the description is already in the set
         if tweet.text not in descriptions:
             # Create a dictionary to store the tweet information of interest
@@ -369,7 +369,6 @@ def sentiment_analysis(company):
     sentiment.authenticate()
     hashtag = "#"+company
     sentiment.get_Tweets(hashtag)
-    sentiment.read_Tweets("tweets.csv")
     sentiment.process_Tweets()
     sentiment.compute_Sentiment()
     return sentiment.get_Sentiment()

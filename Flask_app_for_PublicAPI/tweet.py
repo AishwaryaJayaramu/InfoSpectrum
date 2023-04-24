@@ -19,7 +19,7 @@ import twitter_keys as key
 class Sentiment:
 
 	def __init__(self):
-		self.num_tweets = 10
+		self.num_tweets = 100
 
 	def authenticate(self):
 		auth = tweepy.OAuthHandler(key.tw_consumer_key, key.tw_consumer_secret)
@@ -41,9 +41,7 @@ class Sentiment:
 			# print(tweet.full_text)
 			tweets_list.append([tweet.created_at.date(), tweet.full_text])
 		self.raw_data = pd.DataFrame(data=tweets_list, columns=["Date", "Tweets"])
-		# self.raw_data = pd.DataFrame(data=[[tweet.created_at.date(), tweet.full_text] for tweet in data], columns=["Date", "Tweets"])
-		# print(self.raw_data)
-		self.raw_data.to_csv("Tweets.csv")
+		
 
 
 	def read_Tweets(self, file):
@@ -52,11 +50,8 @@ class Sentiment:
 	def process_Tweets(self):
      
 		self.raw_data["Tweets"] = self.raw_data["Tweets"].apply(lambda x: str(x).replace("[^ a-zA-Z0-9]", ""))
-
 		self.data = pd.DataFrame(columns=["Date", "Tweets"])
 		body = ""
-		# print("bhargav!!!!!! self.data")
-		# print(self.raw_data)
 			
 	def compute_Sentiment(self):
 		self.raw_data["Negative"] = ""
