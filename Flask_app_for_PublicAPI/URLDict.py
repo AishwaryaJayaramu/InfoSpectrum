@@ -51,5 +51,6 @@ urls = { "amazon" : "https://www.glassdoor.com/Reviews/Amazon-Reviews-E6036.htm"
           "jpmorgan" : "https://www.glassdoor.com/Reviews/J-P-Morgan-Reviews-E145.htm", 
           "citrix" : "https://www.glassdoor.com/Reviews/Citrix-Reviews-E5432.htm",
           "visa" : "https://www.glassdoor.com/Reviews/Visa-Inc-Reviews-E3035.htm", 
-          "viasat" : "https://www.glassdoor.com/Reviews/Viasat-Reviews-E5500.htm"}
+          "viasat" : "https://www.glassdoor.com/Reviews/Viasat-Reviews-E5500.htm",
+          "splunk" : "https://www.glassdoor.com/Reviews/Splunk-Reviews-E117313.htm"}
 

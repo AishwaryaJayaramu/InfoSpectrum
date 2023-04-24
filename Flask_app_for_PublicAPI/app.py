@@ -82,10 +82,13 @@ def get_from_db(name):
     client = MongoClient(connection_string)
     db = client[database]
     collections = db['place_scores']
-    document = collections.find_one({'city': name}, {'_id': False})
+    document = collections.find_one({'city': re.compile(name, re.IGNORECASE)}, {'_id': False})
     # print(document)
     if not document:
-        return {}
+        name = re.split('[ ,/]',name)[0]
+        document = collections.find_one({'city': re.compile(name, re.IGNORECASE)}, {'_id': False})
+        if not document:
+            return {}
     data  = {'Cost of Living':document["cost_of_living"],
         'Commute':document["commute"],
         'Safety':document["safety"],
@@ -113,7 +116,6 @@ def place_score_api(name):
         'Safety':0,
         'Environmental Quality':0,
         'Taxation':0}
-        name = re.split('[ ,/]',name)[0]
         data = get_from_db(name.capitalize())
         if data != {}:
             score = data
@@ -392,10 +394,9 @@ def fetch_reviews(company):
         })
     return jsonify(reviews)
     
-    # return Response(response=jsonpickle.encode(fetch_and_insert_into_DB(company)), status=200, mimetype="application/json")
 
     
-# if __name__ == '__main__':
-#     app.debug = True
-#     getUAValues()
-#     app.run(port=8000)
+if __name__ == '__main__':
+    app.debug = True
+    getUAValues()
+    app.run(port=8000)
