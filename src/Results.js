@@ -376,7 +376,7 @@ function Card(props) {
 
   } else if (card_type === '8') {
     return (
-      <div className="card other-cards" style={{width: '25%'}}>
+      <div className="card" style={{width: '55%'}}>
         <h2>Employee Reviews</h2> 
         {<Reviews tbodyData={arrayData}/>}
       </div>

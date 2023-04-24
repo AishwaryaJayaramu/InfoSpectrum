@@ -377,19 +377,23 @@ def sentiment_analysis(company):
 
 @app.route('/fetch_reviews/<company>')
 def fetch_reviews(company):
-    data = [{
-  "_id": {
-    "$oid": "6444bb410370fde10da06c9b"
-  },
-  "title": "Great Company to work for",
-  "author_info": "Apr 19, 2023 - Recruting Coordinator",
-  "rating": "5.0",
-  "pros": "flexible wfh policy great work life balance great people oppurtunity for advancement",
-  "cons": "company budget on offsites could be better",
-  "helpful": "Be the first to find this review helpful"
-}]
-    return jsonify(data)
-    # return Response(response=jsonpickle.encode(fetch_and_insert_into_DB(company)), status=200, mimetype="application/json")
+    connection_string = configur['DATABASE']['CONNECTION_STRING']
+    database = configur['DATABASE']['DB']
+    client = MongoClient(connection_string)
+    db = client[database]
+    collection = db[company]
+    reviews = []
+    for review in collection.find():
+        reviews.append({
+            'title': review['title'],
+            'author_info': review['author_info'],
+            'rating': review['rating'],
+            'pros': review['pros'],
+            'cons': review['cons'],
+            'helpful': review['helpful']
+        })
+    return jsonify(reviews)
+    
 
     
 if __name__ == '__main__':
