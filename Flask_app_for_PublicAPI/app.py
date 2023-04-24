@@ -18,6 +18,7 @@ from twitter_keys import *
 from tweet import Sentiment
 from Scraper import fetch_and_insert_into_DB
 import nltk
+import os
 nltk.download('vader_lexicon')
 from elasticsearch import Elasticsearch
 
@@ -82,7 +83,7 @@ def get_from_db(name):
     db = client[database]
     collections = db['place_scores']
     document = collections.find_one({'city': name}, {'_id': False})
-    print(document)
+    # print(document)
     if not document:
         return {}
     data  = {'Cost of Living':document["cost_of_living"],
@@ -127,7 +128,7 @@ def description_api(name):
     try:
         url = 'https://companies-datas.p.rapidapi.com/v2/company'
         headers = {
-	    "X-RapidAPI-Key": "Key",
+	    "X-RapidAPI-Key": os.getenv("RAPIDAPI_KEY"),
 	    "X-RapidAPI-Host": "companies-datas.p.rapidapi.com"
     }
         querystring = {"query":name+".com"}
@@ -221,8 +222,8 @@ def office_locations(name):
 
 @app.route("/layoff/<company>", methods=["GET"])
 def layoff(company):
-    ELASTIC_PASSWORD = "pass"
-    CLOUD_ID = "deploy"
+    ELASTIC_PASSWORD = os.getenv("ELASTIC_PASSWORD")
+    CLOUD_ID = os.getenv("CLOUD_ID")
     es = Elasticsearch(
         cloud_id=CLOUD_ID,
         basic_auth=("elastic", ELASTIC_PASSWORD)
@@ -378,7 +379,7 @@ def fetch_reviews(company):
     return Response(response=jsonpickle.encode(fetch_and_insert_into_DB(company)), status=200, mimetype="application/json")
 
     
-if __name__ == '__main__':
-    app.debug = True
-    getUAValues()
-    app.run(port=8000)
+# if __name__ == '__main__':
+#     app.debug = True
+#     getUAValues()
+#     app.run(port=8000)

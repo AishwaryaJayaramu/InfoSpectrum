@@ -73,7 +73,7 @@ function Stocks(props) {
   const [data, setData] = useState(null);
   const stocksRef = React.useRef(null);
   useEffect(() => {
-      const endpoint = `http://127.0.0.1:8000/history/${props.query}`;
+      const endpoint = `https://flask-app-z7j2wggxkq-uc.a.run.app/history/${props.query}`;
       const fetchData = async () => {
           const response = await fetch(endpoint);
           setData(await response.json());
@@ -167,6 +167,8 @@ function Card(props) {
           endpoint = `https://flask-app-z7j2wggxkq-uc.a.run.app/location_scores/${props.query}`;
         } else if (card_type === '7') {
           endpoint = `http://127.0.0.1:8000/layoff/${props.query}`;
+        } else if (card_type === '8') {
+          endpoint = `https://flask-app-z7j2wggxkq-uc.a.run.app/fetch_reviews/${props.query}`;
         }
 
         const response = await fetch(endpoint);

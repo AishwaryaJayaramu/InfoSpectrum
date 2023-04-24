@@ -2,6 +2,7 @@ import requests
 import json
 from DBConnection import insert_into_db
 from URLDict import urls
+import os
 
 def fetch_and_insert_into_DB(company):
 
@@ -9,7 +10,7 @@ def fetch_and_insert_into_DB(company):
     print(company_review_url)
     api_url = 'https://www.page2api.com/api/v1/scrape'
     payload = {
-          "api_key": "f22ec81f80ed353adf0af61f755650cc8dd8b8cb", #Limited usage available for this api_key
+          "api_key": os.getenv("SCRAPER_KEY"), #Limited usage available for this api_key
           "url": company_review_url,
           "real_browser": True,
           "merge_loops": True,
@@ -46,7 +47,9 @@ def fetch_and_insert_into_DB(company):
 
     # To check if the reviews are fetched properly
     # print(reviews) 
-
-    insert_into_db(company, reviews["result"]["reviews"])
+    try:
+      insert_into_db(company, reviews["result"]["reviews"])
+    except:
+       return reviews
 
     return reviews["result"]["reviews"]
