@@ -168,7 +168,7 @@ function Card(props) {
         } else if (card_type === '7') {
           endpoint = `http://127.0.0.1:8000/layoff/${props.query}`;
         } else if (card_type === '8') {
-          endpoint = `https://flask-app-z7j2wggxkq-uc.a.run.app/fetch_reviews/${props.query}`;
+          endpoint = `http://127.0.0.1:8000/fetch_reviews/${props.query}`;
         }
 
         const response = await fetch(endpoint);

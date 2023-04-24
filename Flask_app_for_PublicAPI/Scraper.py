@@ -22,7 +22,7 @@ def fetch_and_insert_into_DB(company):
                 { "execute": "parse" },
                 { "execute_js": "document.querySelector(\".nextButton\")?.click()" }
               ],
-              "iterations": 5,
+              "iterations": os.getenv("ITERATION"),
               "stop_condition": "document.querySelector(\".nextButton\") === null"
             }
           ],
