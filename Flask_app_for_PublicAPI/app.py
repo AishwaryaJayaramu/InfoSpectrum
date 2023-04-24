@@ -375,7 +375,24 @@ def sentiment_analysis(company):
 
 @app.route('/fetch_reviews/<company>')
 def fetch_reviews(company):
-    return Response(response=jsonpickle.encode(fetch_and_insert_into_DB(company)), status=200, mimetype="application/json")
+    connection_string = configur['DATABASE']['CONNECTION_STRING']
+    database = configur['DATABASE']['DB']
+    client = MongoClient(connection_string)
+    db = client[database]
+    collection = db[company]
+    reviews = []
+    for review in collection.find():
+        reviews.append({
+            'title': review['title'],
+            'author_info': review['author_info'],
+            'rating': review['rating'],
+            'pros': review['pros'],
+            'cons': review['cons'],
+            'helpful': review['helpful']
+        })
+    return jsonify(reviews)
+    
+    # return Response(response=jsonpickle.encode(fetch_and_insert_into_DB(company)), status=200, mimetype="application/json")
 
     
 # if __name__ == '__main__':

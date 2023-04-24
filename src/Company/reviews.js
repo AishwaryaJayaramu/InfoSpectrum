@@ -44,8 +44,8 @@ class Reviews extends React.Component {
       }
     return(
         <div>
-    <Card>
-      <CardBody>
+    <Card style={{ width: '600px' }}>
+      <CardBody >
             {paginatedData.map((row) => {
               return <div>
             <div className="reviews-top">
