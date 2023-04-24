@@ -154,19 +154,19 @@ function Card(props) {
         let endpoint;
 
         if (card_type === '1') {
-          endpoint = `http://127.0.0.1:8000/description/${props.query}`;
+          endpoint = `https://flask-app-z7j2wggxkq-uc.a.run.app/description/${props.query}`;
         } else if (card_type === '2') {
           endpoint = `https://flask-app-z7j2wggxkq-uc.a.run.app/company/${props.query}`;
         } else if (card_type === '3') {
-          endpoint = `http://127.0.0.1:8000/tweets/${props.query}`;
+          endpoint = `https://flask-app-z7j2wggxkq-uc.a.run.app/tweets/${props.query}`;
         } else if (card_type === '4') {
-          endpoint = `http://127.0.0.1:8000/sentiment_analysis/${props.query}`;
+          endpoint = `https://flask-app-z7j2wggxkq-uc.a.run.app/sentiment_analysis/${props.query}`;
         } else if (card_type === '5') {
           endpoint = `https://flask-app-z7j2wggxkq-uc.a.run.app/history/${props.query}`;
         } else if (card_type === '6') {
           endpoint = `https://flask-app-z7j2wggxkq-uc.a.run.app/location_scores/${props.query}`;
         } else if (card_type === '7') {
-          endpoint = `http://127.0.0.1:8000/layoff/${props.query}`;
+          endpoint = `https://flask-app-z7j2wggxkq-uc.a.run.app/layoff/${props.query}`;
         } else if (card_type === '8') {
           endpoint = `https://flask-app-z7j2wggxkq-uc.a.run.app/fetch_reviews/${props.query}`;
         }
